@@ -27,8 +27,14 @@ import {
     Send,
     Settings,
     Pencil,
-    ListChecks
+    ListChecks,
+    ArrowLeft,
+    Home,
+    BarChart3,
+    HeartPulse,
+    Baby
 } from 'lucide-react';
+import PastorReportsDashboard from '@/components/pastor/PastorReportsDashboard';
 
 // --- TYPES ---
 interface FamilyMember {
@@ -288,6 +294,209 @@ const INITIAL_HOUSEHOLDS: Household[] = [
                 isChurchMarried: false,
             }
         ]
+    },
+    {
+        id: 'FAM-2026-0045',
+        familyName: 'Mendoza',
+        headName: 'Ramon Mendoza',
+        address: '88 Mabini Street',
+        barangay: 'San Isidro',
+        sitioPurok: 'Purok 2',
+        becCluster: 'BEC San Lorenzo',
+        contactNumber: '0918-777-6543',
+        dateEncoded: '2026-09-25',
+        status: 'Approved',
+        encodedBy: 'Mark Villanueva (Volunteer)',
+        massFrequency: 'Every week',
+        becParticipation: 'Regular',
+        pastoralNeeds: ['Sacramental preparation for children', 'Church wedding assistance (Kasalang Bayan)'],
+        volunteerSkills: ['Choir & Music', 'Youth Mentorship'],
+        familyJoy: 'Children are healthy and doing great in school.',
+        familyConcern: 'Need legal and church guidance to regularize civil marriage.',
+        howParishCanHelp: 'Kasalang Bayan marriage seminar and baptism for our baby.',
+        consentGiven: true,
+        members: [
+            {
+                id: 'm-11',
+                fullName: 'Ramon Mendoza',
+                relationship: 'Head',
+                sex: 'Male',
+                age: 38,
+                civilStatus: 'Civilly Married',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: false,
+                isChurchMarried: false,
+            },
+            {
+                id: 'm-12',
+                fullName: 'Gina Mendoza',
+                relationship: 'Spouse',
+                sex: 'Female',
+                age: 36,
+                civilStatus: 'Civilly Married',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: true,
+                isChurchMarried: false,
+            },
+            {
+                id: 'm-13',
+                fullName: 'Carlo Mendoza',
+                relationship: 'Son',
+                sex: 'Male',
+                age: 10,
+                civilStatus: 'Single',
+                isBaptized: true,
+                isFirstCommunion: false,
+                isConfirmed: false,
+                isChurchMarried: false,
+            },
+            {
+                id: 'm-14',
+                fullName: 'Angel Mendoza',
+                relationship: 'Daughter',
+                sex: 'Female',
+                age: 1,
+                civilStatus: 'Single',
+                isBaptized: false,
+                isFirstCommunion: false,
+                isConfirmed: false,
+                isChurchMarried: false,
+            }
+        ]
+    },
+    {
+        id: 'FAM-2026-0046',
+        familyName: 'Flores',
+        headName: 'Lito Flores',
+        address: '22 Ilang-Ilang St.',
+        barangay: 'San Isidro',
+        sitioPurok: 'Purok 3',
+        becCluster: 'BEC St. Jude',
+        contactNumber: '0920-333-8899',
+        dateEncoded: '2026-09-26',
+        status: 'Approved',
+        encodedBy: 'Ana Ramos (Volunteer)',
+        massFrequency: 'Every week',
+        becParticipation: 'Regular',
+        pastoralNeeds: ['Home communion for elderly / sick', 'Pastoral home visit by Parish team'],
+        volunteerSkills: ['Medical / First Aid', 'Teaching / Catechesis'],
+        familyJoy: 'Grateful for wife passing nurse licensing and serving the clinic.',
+        familyConcern: 'Tatay Mariano is bedridden and cannot walk to church.',
+        howParishCanHelp: 'Monthly home communion and anointing of the sick for Tatay Mariano.',
+        consentGiven: true,
+        members: [
+            {
+                id: 'm-15',
+                fullName: 'Lito Flores',
+                relationship: 'Head',
+                sex: 'Male',
+                age: 52,
+                civilStatus: 'Married (Church)',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: true,
+                isChurchMarried: true,
+            },
+            {
+                id: 'm-16',
+                fullName: 'Carmen Flores',
+                relationship: 'Spouse',
+                sex: 'Female',
+                age: 50,
+                civilStatus: 'Married (Church)',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: true,
+                isChurchMarried: true,
+            },
+            {
+                id: 'm-17',
+                fullName: 'Mariano Flores',
+                relationship: 'Parent',
+                sex: 'Male',
+                age: 82,
+                civilStatus: 'Widowed',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: true,
+                isChurchMarried: true,
+                isHomebound: true,
+                specialNeeds: 'Bedridden senior; stroke survivor needing Viaticum',
+            },
+            {
+                id: 'm-18',
+                fullName: 'Paolo Flores',
+                relationship: 'Son',
+                sex: 'Male',
+                age: 17,
+                civilStatus: 'Single',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: false,
+                isChurchMarried: false,
+            }
+        ]
+    },
+    {
+        id: 'FAM-2026-0047',
+        familyName: 'Bautista',
+        headName: 'Noel Bautista',
+        address: '56 MacArthur Highway',
+        barangay: 'San Isidro',
+        sitioPurok: 'Purok 5',
+        becCluster: 'BEC San Pedro',
+        contactNumber: '0917-888-9900',
+        dateEncoded: '2026-09-27',
+        status: 'Approved',
+        encodedBy: 'Ana Ramos (Volunteer)',
+        massFrequency: 'Every week',
+        becParticipation: 'Regular',
+        pastoralNeeds: ['Pastoral home visit by Parish team'],
+        volunteerSkills: ['BEC Leader / Coordinator', 'Carpentry & Maintenance', 'Teaching / Catechesis'],
+        familyJoy: 'Son Joshua successfully completed vocational electrical training.',
+        familyConcern: 'Need more active volunteers for local purok chapel upkeep.',
+        howParishCanHelp: 'Blessing of our house and family workshop.',
+        consentGiven: true,
+        members: [
+            {
+                id: 'm-19',
+                fullName: 'Noel Bautista',
+                relationship: 'Head',
+                sex: 'Male',
+                age: 48,
+                civilStatus: 'Married (Church)',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: true,
+                isChurchMarried: true,
+            },
+            {
+                id: 'm-20',
+                fullName: 'Elena Bautista',
+                relationship: 'Spouse',
+                sex: 'Female',
+                age: 46,
+                civilStatus: 'Married (Church)',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: true,
+                isChurchMarried: true,
+            },
+            {
+                id: 'm-21',
+                fullName: 'Joshua Bautista',
+                relationship: 'Son',
+                sex: 'Male',
+                age: 19,
+                civilStatus: 'Single',
+                isBaptized: true,
+                isFirstCommunion: true,
+                isConfirmed: true,
+                isChurchMarried: false,
+            }
+        ]
     }
 ];
 
@@ -402,8 +611,26 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
         issuedBy: c.issued_by?.name || 'Rev. Fr. Emmanuel D. Garcia (Parish Priest)',
     });
 
-    // Top-level Role State
-    const [currentRole, setCurrentRole] = useState<'volunteer' | 'pastor' | 'member' | 'ppc'>('volunteer');
+    // Top-level Role State (initialized with URL parameter if provided, e.g. /prototype?role=pastor)
+    const [currentRole, setCurrentRole] = useState<'volunteer' | 'pastor' | 'member' | 'ppc'>(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const role = params.get('role');
+            if (role === 'volunteer' || role === 'pastor' || role === 'member' || role === 'ppc') {
+                return role;
+            }
+        }
+        return 'volunteer';
+    });
+
+    const setRoleWithUrl = (role: 'volunteer' | 'pastor' | 'member' | 'ppc') => {
+        setCurrentRole(role);
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('role', role);
+            window.history.replaceState({}, '', url.toString());
+        }
+    };
 
     // Central Data Stores (Interactive Prototype connected to MySQL)
     const [households, setHouseholds] = useState<Household[]>(() => {
@@ -459,6 +686,7 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
     const [formMassFreq, setFormMassFreq] = useState<'Every week' | 'Almost every week' | 'Occasionally' | 'Rarely / Never'>('Every week');
     const [formBecPart, setFormBecPart] = useState<'Regular' | 'Sometimes' | 'Rarely' | 'Not active'>('Regular');
     const [formNeeds, setFormNeeds] = useState<string[]>([]);
+    const [formOtherNeed, setFormOtherNeed] = useState('');
     const [formSkills, setFormSkills] = useState<string[]>([]);
     const [formJoy, setFormJoy] = useState('');
     const [formConcern, setFormConcern] = useState('');
@@ -504,8 +732,8 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
         router.delete(`/parish-options/${id}`, { preserveScroll: true });
     };
 
-    // Pastor View State
-    const [pastorTab, setPastorTab] = useState<'review' | 'certificates' | 'records' | 'settings'>('review');
+    // Pastor View State (Defaults to useful Reports Dashboard)
+    const [pastorTab, setPastorTab] = useState<'reports' | 'review' | 'certificates' | 'records' | 'settings'>('reports');
     const [selectedHouseholdForReview, setSelectedHouseholdForReview] = useState<Household | null>(null);
     const [correctionNoteInput, setCorrectionNoteInput] = useState('');
     const [searchRegistry, setSearchRegistry] = useState('');
@@ -584,7 +812,7 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
             contact_number: formContact,
             mass_frequency: formMassFreq,
             bec_participation: formBecPart,
-            pastoral_needs: formNeeds,
+            pastoral_needs: formOtherNeed.trim() ? [...formNeeds, `Other: ${formOtherNeed.trim()}`] : formNeeds,
             volunteer_skills: formSkills,
             family_joy: formJoy,
             family_concern: formConcern,
@@ -600,6 +828,8 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                 is_first_communion: m.isFirstCommunion,
                 is_confirmed: m.isConfirmed,
                 is_church_married: m.isChurchMarried,
+                is_homebound: m.isHomebound ?? false,
+                special_needs: m.specialNeeds ?? '',
             }))
         }, {
             preserveScroll: true,
@@ -615,6 +845,7 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                 setFormConcern('');
                 setFormHelp('');
                 setFormNeeds([]);
+                setFormOtherNeed('');
                 setFormSkills([]);
                 setFormConsent(false);
                 setSurveyStep(1);
@@ -783,56 +1014,67 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                             </div>
                         </div>
 
-                        {/* ROLE SWITCHER */}
-                        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200/80 overflow-x-auto text-xs font-medium">
-                            <button
-                                onClick={() => setCurrentRole('volunteer')}
-                                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap ${currentRole === 'volunteer'
-                                    ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                                    : 'text-slate-600 hover:text-slate-900'
-                                    }`}
+                        {/* WELCOME PAGE & ROLE SWITCHER */}
+                        <div className="flex items-center gap-2">
+                            <a
+                                href="/"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:text-emerald-700 hover:border-emerald-300 transition-all shadow-xs"
+                                title="Back to Public Welcome Page"
                             >
-                                <Users className="w-3.5 h-3.5 text-blue-600" />
-                                <span>Volunteer</span>
-                            </button>
+                                <ArrowLeft className="w-3.5 h-3.5 text-slate-500" />
+                                <span>Welcome Page</span>
+                            </a>
 
-                            <button
-                                onClick={() => setCurrentRole('pastor')}
-                                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap relative ${currentRole === 'pastor'
-                                    ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                                    : 'text-slate-600 hover:text-slate-900'
-                                    }`}
-                            >
-                                <Church className="w-3.5 h-3.5 text-emerald-700" />
-                                <span>Pastor</span>
-                                {(pendingHouseholdCount > 0 || pendingCertCount > 0) && (
-                                    <span className="w-4 h-4 text-[10px] rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
-                                        {pendingHouseholdCount + pendingCertCount}
-                                    </span>
-                                )}
-                            </button>
+                            <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200/80 overflow-x-auto text-xs font-medium">
+                                <button
+                                    onClick={() => setRoleWithUrl('volunteer')}
+                                    className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap ${currentRole === 'volunteer'
+                                        ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                        }`}
+                                >
+                                    <Users className="w-3.5 h-3.5 text-blue-600" />
+                                    <span>Volunteer</span>
+                                </button>
 
-                            <button
-                                onClick={() => setCurrentRole('member')}
-                                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap ${currentRole === 'member'
-                                    ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                                    : 'text-slate-600 hover:text-slate-900'
-                                    }`}
-                            >
-                                <Award className="w-3.5 h-3.5 text-purple-600" />
-                                <span>Family Member</span>
-                            </button>
+                                <button
+                                    onClick={() => setRoleWithUrl('pastor')}
+                                    className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap relative ${currentRole === 'pastor'
+                                        ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                        }`}
+                                >
+                                    <Church className="w-3.5 h-3.5 text-emerald-700" />
+                                    <span>Pastor</span>
+                                    {(pendingHouseholdCount > 0 || pendingCertCount > 0) && (
+                                        <span className="w-4 h-4 text-[10px] rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
+                                            {pendingHouseholdCount + pendingCertCount}
+                                        </span>
+                                    )}
+                                </button>
 
-                            <button
-                                onClick={() => setCurrentRole('ppc')}
-                                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap ${currentRole === 'ppc'
-                                    ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                                    : 'text-slate-600 hover:text-slate-900'
-                                    }`}
-                            >
-                                <HeartHandshake className="w-3.5 h-3.5 text-rose-600" />
-                                <span>Parish Council (PPC)</span>
-                            </button>
+                                <button
+                                    onClick={() => setRoleWithUrl('member')}
+                                    className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap ${currentRole === 'member'
+                                        ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                        }`}
+                                >
+                                    <Award className="w-3.5 h-3.5 text-purple-600" />
+                                    <span>Family Member</span>
+                                </button>
+
+                                <button
+                                    onClick={() => setRoleWithUrl('ppc')}
+                                    className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap ${currentRole === 'ppc'
+                                        ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                        }`}
+                                >
+                                    <HeartHandshake className="w-3.5 h-3.5 text-rose-600" />
+                                    <span>Parish Council (PPC)</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1239,6 +1481,31 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                                 </label>
                                                             </div>
                                                         </div>
+
+                                                        {/* Homebound / Sick flag */}
+                                                        <div className="pt-1 border-t border-slate-100">
+                                                            <label className="flex items-start gap-2 cursor-pointer text-xs">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={member.isHomebound ?? false}
+                                                                    onChange={e => updateMember(index, 'isHomebound', e.target.checked)}
+                                                                    className="mt-0.5 rounded text-rose-600 focus:ring-rose-500"
+                                                                />
+                                                                <span className="text-slate-700">
+                                                                    <strong>This person is sick or cannot go to church</strong>
+                                                                    <span className="text-slate-400 ml-1">(bedridden, elderly, needs home communion / sick call)</span>
+                                                                </span>
+                                                            </label>
+                                                            {member.isHomebound && (
+                                                                <input
+                                                                    type="text"
+                                                                    value={member.specialNeeds ?? ''}
+                                                                    onChange={e => updateMember(index, 'specialNeeds', e.target.value)}
+                                                                    placeholder="Briefly describe situation (e.g. bedridden stroke patient, blind elderly)"
+                                                                    className="mt-2 w-full text-xs px-2.5 py-1.5 bg-white border border-rose-300 rounded-lg focus:outline-rose-500"
+                                                                />
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -1325,6 +1592,28 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                             <span className="text-slate-800">{need}</span>
                                                         </label>
                                                     ))}
+                                                </div>
+
+                                                {/* Other / custom need */}
+                                                <div className="mt-2">
+                                                    <label className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer text-xs">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={formOtherNeed.length > 0}
+                                                            onChange={e => { if (!e.target.checked) setFormOtherNeed(''); }}
+                                                            className="rounded text-emerald-600 focus:ring-emerald-500"
+                                                        />
+                                                        <span className="text-slate-800 font-medium">Other need not listed above</span>
+                                                    </label>
+                                                    {formOtherNeed !== undefined && (
+                                                        <input
+                                                            type="text"
+                                                            value={formOtherNeed}
+                                                            onChange={e => setFormOtherNeed(e.target.value)}
+                                                            placeholder="Please describe the specific need..."
+                                                            className="mt-1.5 w-full text-xs px-3 py-1.5 border border-slate-300 rounded-lg focus:outline-emerald-500"
+                                                        />
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -1476,121 +1765,118 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                 {/* ========================================================================= */}
                 {currentRole === 'pastor' && (
                     <div className="space-y-6">
-                        {/* Top Role Indicator */}
-                        <div className="bg-emerald-900 text-white rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        {/* Top Role Indicator — 30% deep green */}
+                        <div className="bg-green-900 text-white rounded-xl px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div>
-                                <span className="text-xs font-semibold text-emerald-300 uppercase tracking-wider">Pastor Portal</span>
-                                <h2 className="text-xl font-bold mt-0.5">Rev. Fr. Emmanuel D. Garcia</h2>
-                                <p className="text-xs text-emerald-200 mt-1">
-                                    Sole authority for approving volunteer surveys and issuing sacramental certificates.
+                                <span className="text-[11px] font-semibold text-green-400 uppercase tracking-widest">Pastor Portal</span>
+                                <h2 className="text-lg font-bold mt-0.5">Rev. Fr. Emmanuel D. Garcia</h2>
+                                <p className="text-xs text-green-300 mt-0.5">
+                                    Approves household surveys and issues sacramental certificates.
                                 </p>
                             </div>
 
-                            <div className="flex items-center gap-3">
-                                <div className="text-center px-4 py-2 bg-emerald-800/80 rounded-lg border border-emerald-700">
-                                    <span className="text-xs text-emerald-200 block">Pending Families</span>
-                                    <span className="text-xl font-bold">{pendingHouseholdCount}</span>
-                                </div>
-                                <div className="text-center px-4 py-2 bg-emerald-800/80 rounded-lg border border-emerald-700">
-                                    <span className="text-xs text-emerald-200 block">Certificate Requests</span>
-                                    <span className="text-xl font-bold">{pendingCertCount}</span>
-                                </div>
+                            <div className="flex flex-wrap items-center gap-2">
+                                {[
+                                    { label: 'Total Parishioners', value: households.reduce((acc, h) => acc + h.members.length, 0) },
+                                    { label: 'Pending Surveys',    value: pendingHouseholdCount },
+                                    { label: 'Pending Certs',      value: pendingCertCount },
+                                ].map(stat => (
+                                    <div key={stat.label} className="text-center px-3 py-1.5 bg-green-800 rounded-lg border border-green-700">
+                                        <span className="text-[10px] text-green-300 block">{stat.label}</span>
+                                        <span className="text-lg font-bold">{stat.value}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
                         {/* Navigation Tabs */}
-                        <div className="flex border-b border-slate-200 gap-6 text-sm font-medium">
-                            <button
-                                onClick={() => setPastorTab('review')}
-                                className={`pb-3 flex items-center gap-2 border-b-2 transition-all ${pastorTab === 'review'
-                                    ? 'border-emerald-600 text-emerald-700 font-semibold'
-                                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                        <div className="flex border-b border-stone-200 gap-6 text-sm font-medium overflow-x-auto pb-px">
+                            {[
+                                { key: 'reports',      label: 'Reports & Lists',                    count: null             },
+                                { key: 'review',       label: 'Pending Surveys',                    count: pendingHouseholdCount },
+                                { key: 'certificates', label: 'Certificate Requests',               count: pendingCertCount },
+                                { key: 'records',      label: 'Parish Registry',                    count: null             },
+                                { key: 'settings',     label: 'Form Settings',                      count: null             },
+                            ].map(tab => (
+                                <button
+                                    key={tab.key}
+                                    onClick={() => setPastorTab(tab.key as any)}
+                                    className={`pb-3 flex items-center gap-1.5 border-b-2 transition-all whitespace-nowrap text-sm ${
+                                        pastorTab === tab.key
+                                            ? 'border-green-900 text-green-900 font-semibold'
+                                            : 'border-transparent text-stone-400 hover:text-stone-700'
                                     }`}
-                            >
-                                <Clock className="w-4 h-4" />
-                                Pending Family Surveys ({pendingHouseholdCount})
-                            </button>
-
-                            <button
-                                onClick={() => setPastorTab('certificates')}
-                                className={`pb-3 flex items-center gap-2 border-b-2 transition-all ${pastorTab === 'certificates'
-                                    ? 'border-emerald-600 text-emerald-700 font-semibold'
-                                    : 'border-transparent text-slate-500 hover:text-slate-800'
-                                    }`}
-                            >
-                                <Award className="w-4 h-4" />
-                                Certificate Requests ({pendingCertCount})
-                            </button>
-
-                            <button
-                                onClick={() => setPastorTab('records')}
-                                className={`pb-3 flex items-center gap-2 border-b-2 transition-all ${pastorTab === 'records'
-                                    ? 'border-emerald-600 text-emerald-700 font-semibold'
-                                    : 'border-transparent text-slate-500 hover:text-slate-800'
-                                    }`}
-                            >
-                                <Users className="w-4 h-4" />
-                                Parish Registry (Approved)
-                            </button>
-
-                            <button
-                                onClick={() => setPastorTab('settings')}
-                                className={`pb-3 flex items-center gap-2 border-b-2 transition-all ${pastorTab === 'settings'
-                                    ? 'border-emerald-600 text-emerald-700 font-semibold'
-                                    : 'border-transparent text-slate-500 hover:text-slate-800'
-                                    }`}
-                            >
-                                <Settings className="w-4 h-4" />
-                                Form Settings
-                            </button>
+                                >
+                                    {tab.label}
+                                    {tab.count !== null && tab.count > 0 && (
+                                        <span className="text-[10px] font-bold bg-amber-700 text-white px-1.5 py-0.5 rounded-full">{tab.count}</span>
+                                    )}
+                                </button>
+                            ))}
                         </div>
+
+                        {/* TAB 0: PASTORAL REPORTS DASHBOARD */}
+                        {pastorTab === 'reports' && (
+                            <PastorReportsDashboard
+                                households={households}
+                                onSelectHousehold={(h) => setSelectedHouseholdForReview(h)}
+                                onSwitchTab={(tab) => setPastorTab(tab)}
+                            />
+                        )}
 
                         {/* TAB 1: PENDING HOUSEHOLDS REVIEW */}
                         {pastorTab === 'review' && (
                             <div className="space-y-4">
+                                {/* Section header */}
+                                <div className="bg-green-900 text-white rounded-xl px-5 py-3.5 flex items-center justify-between">
+                                    <div>
+                                        <p className="text-[11px] font-semibold text-green-400 uppercase tracking-widest">For Your Review</p>
+                                        <h3 className="font-bold text-base">Pending Family Surveys</h3>
+                                    </div>
+                                    <span className="text-sm font-bold bg-amber-700 px-3 py-1 rounded-lg">{pendingHouseholdCount} pending</span>
+                                </div>
+
                                 {pendingHouseholdCount === 0 ? (
-                                    <div className="p-12 text-center bg-white rounded-xl border border-slate-200">
-                                        <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
-                                        <h4 className="font-bold text-slate-900">All Surveys Reviewed</h4>
-                                        <p className="text-xs text-slate-500 mt-1">There are no pending household submissions from volunteers.</p>
+                                    <div className="p-12 text-center bg-white rounded-xl border border-stone-200">
+                                        <CheckCircle2 className="w-10 h-10 text-green-700 mx-auto mb-2" />
+                                        <h4 className="font-bold text-stone-900">All surveys have been reviewed.</h4>
+                                        <p className="text-xs text-stone-400 mt-1">No pending household submissions from volunteers.</p>
                                     </div>
                                 ) : (
-                                    <div className="bg-white rounded-xl border border-slate-200 shadow-2xs divide-y divide-slate-100">
+                                    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden divide-y divide-stone-100">
                                         {households.filter(h => h.status === 'Pending Review').map(h => (
-                                            <div key={h.id} className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                            <div key={h.id} className="p-4 sm:p-5 flex flex-col md:flex-row md:items-start justify-between gap-4">
                                                 <div className="space-y-1.5">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-bold text-slate-900">{h.familyName} Family</span>
-                                                        <span className="text-xs text-slate-400">({h.id})</span>
-                                                        <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
-                                                            Awaiting Pastor Verification
+                                                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                                        <span className="font-bold text-green-900 text-sm">{h.familyName} Family</span>
+                                                        <span className="text-xs text-stone-400">({h.id})</span>
+                                                        <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-amber-300 bg-amber-50 text-amber-800">
+                                                            Awaiting Verification
                                                         </span>
                                                     </div>
-                                                    <p className="text-xs text-slate-600">
-                                                        <strong>Head:</strong> {h.headName} • <strong>Address:</strong> {h.address}, {h.sitioPurok}, {h.barangay} • <strong>BEC:</strong> {h.becCluster}
+                                                    <p className="text-xs text-stone-600">
+                                                        <strong>Head:</strong> {h.headName} &nbsp;•&nbsp; <strong>Address:</strong> {h.address}, {h.sitioPurok} &nbsp;•&nbsp; <strong>BEC:</strong> {h.becCluster}
                                                     </p>
-                                                    <p className="text-xs text-slate-500">
-                                                        Encoded by {h.encodedBy} on {h.dateEncoded} • {h.members.length} household members recorded
+                                                    <p className="text-xs text-stone-400">
+                                                        Encoded by {h.encodedBy} on {h.dateEncoded} &nbsp;•&nbsp; {h.members.length} members
                                                     </p>
                                                     {h.pastoralNeeds.length > 0 && (
-                                                        <div className="flex flex-wrap gap-1.5 pt-1">
+                                                        <div className="flex flex-wrap gap-1.5 pt-0.5">
                                                             {h.pastoralNeeds.map(need => (
-                                                                <span key={need} className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
-                                                                    Need: {need}
+                                                                <span key={need} className="text-[10px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded border border-stone-200">
+                                                                    {need}
                                                                 </span>
                                                             ))}
                                                         </div>
                                                     )}
                                                 </div>
 
-                                                <div className="flex items-center gap-2 shrink-0">
-                                                    <button
-                                                        onClick={() => setSelectedHouseholdForReview(h)}
-                                                        className="px-3.5 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg flex items-center gap-1.5 shadow-xs"
-                                                    >
-                                                        <Eye className="w-3.5 h-3.5" /> Review Details
-                                                    </button>
-                                                </div>
+                                                <button
+                                                    onClick={() => setSelectedHouseholdForReview(h)}
+                                                    className="shrink-0 px-3.5 py-1.5 text-xs font-semibold bg-green-900 hover:bg-green-800 text-white rounded-lg flex items-center gap-1.5"
+                                                >
+                                                    <Eye className="w-3.5 h-3.5" /> Review
+                                                </button>
                                             </div>
                                         ))}
                                     </div>
@@ -1601,47 +1887,55 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                         {/* TAB 2: CERTIFICATE REQUESTS */}
                         {pastorTab === 'certificates' && (
                             <div className="space-y-4">
-                                <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
-                                    <div className="p-4 border-b border-slate-100">
-                                        <h3 className="font-semibold text-slate-900 text-sm">Certificate Requests from Parishioners</h3>
-                                        <p className="text-xs text-slate-500">Verify registry book and issue official certificates.</p>
+                                <div className="bg-green-900 text-white rounded-xl px-5 py-3.5 flex items-center justify-between">
+                                    <div>
+                                        <p className="text-[11px] font-semibold text-green-400 uppercase tracking-widest">Certificates</p>
+                                        <h3 className="font-bold text-base">Certificate Requests</h3>
                                     </div>
-                                    <div className="divide-y divide-slate-100">
+                                    <span className="text-sm font-bold bg-amber-700 px-3 py-1 rounded-lg">{pendingCertCount} pending</span>
+                                </div>
+
+                                <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+                                    <div className="px-5 py-3.5 border-b border-stone-100 bg-stone-50">
+                                        <p className="text-xs text-stone-500">Verify the registry book entry and issue official certificates to parishioners.</p>
+                                    </div>
+                                    <div className="divide-y divide-stone-100">
                                         {certificates.map(cert => (
-                                            <div key={cert.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                            <div key={cert.id} className="px-5 py-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
                                                 <div className="space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-bold text-slate-900 text-sm">{cert.recipientName}</span>
-                                                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
+                                                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                                        <span className="font-bold text-green-900 text-sm">{cert.recipientName}</span>
+                                                        <span className="text-xs font-medium px-2 py-0.5 rounded border border-stone-300 bg-stone-100 text-stone-700">
                                                             {cert.certificateType} Certificate
                                                         </span>
-                                                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${cert.status === 'Approved & Issued' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                                                            }`}>
+                                                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${
+                                                            cert.status === 'Approved & Issued'
+                                                                ? 'border-green-300 bg-green-50 text-green-800'
+                                                                : 'border-amber-300 bg-amber-50 text-amber-800'
+                                                        }`}>
                                                             {cert.status}
                                                         </span>
                                                     </div>
-                                                    <p className="text-xs text-slate-600">
-                                                        <strong>Purpose:</strong> {cert.purpose} • <strong>Family ID:</strong> {cert.familyId}
+                                                    <p className="text-xs text-stone-600">
+                                                        <strong>Purpose:</strong> {cert.purpose} &nbsp;•&nbsp; <strong>Family ID:</strong> {cert.familyId}
                                                     </p>
                                                     {cert.dateIssued && (
-                                                        <p className="text-[11px] text-slate-500">
-                                                            Issued on {cert.dateIssued} by {cert.issuedBy}
-                                                        </p>
+                                                        <p className="text-[11px] text-stone-400">Issued on {cert.dateIssued} by {cert.issuedBy}</p>
                                                     )}
                                                 </div>
 
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-2 shrink-0">
                                                     {cert.status === 'Pending Review' ? (
                                                         <button
                                                             onClick={() => setSelectedCertToIssue(cert)}
-                                                            className="px-3.5 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg flex items-center gap-1.5"
+                                                            className="px-3.5 py-1.5 text-xs font-semibold bg-amber-700 hover:bg-amber-600 text-white rounded-lg flex items-center gap-1.5"
                                                         >
-                                                            <Award className="w-3.5 h-3.5" /> Verify & Issue
+                                                            <Award className="w-3.5 h-3.5" /> Verify &amp; Issue
                                                         </button>
                                                     ) : (
                                                         <button
                                                             onClick={() => setViewingCertificate(cert)}
-                                                            className="px-3 py-1.5 text-xs font-medium border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-1"
+                                                            className="px-3 py-1.5 text-xs font-medium border border-green-800 text-green-800 hover:bg-green-50 rounded-lg flex items-center gap-1"
                                                         >
                                                             <Eye className="w-3.5 h-3.5" /> View Certificate
                                                         </button>
@@ -1657,26 +1951,29 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                         {/* TAB 3: APPROVED REGISTRY */}
                         {pastorTab === 'records' && (
                             <div className="space-y-4">
-                                {/* Search & Filter Bar */}
-                                <div className="flex flex-col sm:flex-row gap-3">
-                                    <div className="relative flex-1">
-                                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                                        <input
-                                            type="text"
-                                            value={searchRegistry}
-                                            onChange={e => setSearchRegistry(e.target.value)}
-                                            placeholder="Search by family name or address..."
-                                            className="w-full text-xs pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg"
-                                        />
+                                <div className="bg-green-900 text-white rounded-xl px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div>
+                                        <p className="text-[11px] font-semibold text-green-400 uppercase tracking-widest">Records</p>
+                                        <h3 className="font-bold text-base">Parish Registry</h3>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Filter className="w-4 h-4 text-slate-500" />
+                                    {/* Search & Filter */}
+                                    <div className="flex flex-wrap gap-2">
+                                        <div className="relative">
+                                            <Search className="w-3.5 h-3.5 text-green-400 absolute left-2.5 top-2" />
+                                            <input
+                                                type="text"
+                                                value={searchRegistry}
+                                                onChange={e => setSearchRegistry(e.target.value)}
+                                                placeholder="Search family..."
+                                                className="text-xs pl-8 pr-3 py-1.5 bg-green-800 border border-green-700 text-green-100 placeholder-green-500 rounded-lg focus:outline-none w-44"
+                                            />
+                                        </div>
                                         <select
                                             value={filterBec}
                                             onChange={e => setFilterBec(e.target.value)}
-                                            className="text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg"
+                                            className="text-xs px-3 py-1.5 bg-green-800 border border-green-700 text-green-100 rounded-lg focus:outline-none"
                                         >
-                                            <option value="All">All BEC Clusters</option>
+                                            <option value="All">All BECs</option>
                                             <option value="BEC St. Jude">BEC St. Jude</option>
                                             <option value="BEC San Pedro">BEC San Pedro</option>
                                             <option value="BEC San Lorenzo">BEC San Lorenzo</option>
@@ -1684,29 +1981,33 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                     </div>
                                 </div>
 
-                                <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
-                                    <div className="divide-y divide-slate-100">
+                                <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+                                    <div className="divide-y divide-stone-100">
                                         {filteredHouseholds.map(h => (
-                                            <div key={h.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                            <div key={h.id} className="px-5 py-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
                                                 <div>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-bold text-slate-900 text-sm">{h.familyName} Family</span>
-                                                        <span className="text-xs text-slate-400">({h.id})</span>
-                                                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${h.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}`}>
+                                                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                                        <span className="font-bold text-green-900 text-sm">{h.familyName} Family</span>
+                                                        <span className="text-xs text-stone-400">({h.id})</span>
+                                                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${
+                                                            h.status === 'Approved'
+                                                                ? 'border-green-300 bg-green-50 text-green-800'
+                                                                : 'border-stone-300 bg-stone-100 text-stone-600'
+                                                        }`}>
                                                             {h.status}
                                                         </span>
                                                     </div>
-                                                    <p className="text-xs text-slate-600 mt-0.5">
-                                                        {h.address}, {h.sitioPurok}, {h.barangay} • <strong>BEC:</strong> {h.becCluster}
+                                                    <p className="text-xs text-stone-500 mt-0.5">
+                                                        {h.address}, {h.sitioPurok} &nbsp;•&nbsp; <strong>BEC:</strong> {h.becCluster}
                                                     </p>
-                                                    <p className="text-xs text-slate-500 mt-1">
+                                                    <p className="text-xs text-stone-400 mt-0.5">
                                                         {h.members.map(m => m.fullName).join(', ')}
                                                     </p>
                                                 </div>
 
                                                 <button
                                                     onClick={() => setSelectedHouseholdForReview(h)}
-                                                    className="px-3 py-1.5 text-xs font-medium border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg shrink-0"
+                                                    className="shrink-0 px-3 py-1.5 text-xs font-medium border border-green-800 text-green-800 hover:bg-green-50 rounded-lg transition-colors"
                                                 >
                                                     View Profile
                                                 </button>
@@ -1717,31 +2018,30 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                             </div>
                         )}
 
-                        {/* TAB 4: FORM SETTINGS (Dropdown Options CRUD) */}
+                        {/* TAB 4: FORM SETTINGS */}
                         {pastorTab === 'settings' && (
                             <div className="space-y-5">
-                                {/* Info */}
-                                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
-                                    <Settings className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
-                                    <span>
-                                        Manage the dropdown choices available to volunteers when encoding household surveys.
-                                        Changes take effect immediately on the next form load.
-                                    </span>
+                                {/* Header */}
+                                <div className="bg-green-900 text-white rounded-xl px-5 py-3.5">
+                                    <p className="text-[11px] font-semibold text-green-400 uppercase tracking-widest">Admin</p>
+                                    <h3 className="font-bold text-base">Form Settings</h3>
+                                    <p className="text-xs text-green-300 mt-0.5">Manage dropdown choices volunteers see when encoding household surveys.</p>
                                 </div>
 
                                 {/* Category Switcher */}
-                                <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-medium w-fit">
+                                <div className="flex items-center gap-1 p-1 bg-stone-100 rounded-lg border border-stone-200 text-xs font-medium w-fit">
                                     {([
-                                        { key: 'barangay', label: 'Barangay' },
+                                        { key: 'barangay',   label: 'Barangay'     },
                                         { key: 'sitio_purok', label: 'Sitio / Purok' },
-                                        { key: 'bec_cluster', label: 'BEC Cluster' },
+                                        { key: 'bec_cluster', label: 'BEC Cluster'  },
                                     ] as const).map(cat => (
                                         <button
                                             key={cat.key}
                                             onClick={() => setSettingsCategory(cat.key)}
-                                            className={`px-4 py-1.5 rounded-lg transition-all ${settingsCategory === cat.key
-                                                ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                                                : 'text-slate-600 hover:text-slate-900'
+                                            className={`px-4 py-1.5 rounded-md transition-all ${
+                                                settingsCategory === cat.key
+                                                    ? 'bg-green-900 text-white font-semibold'
+                                                    : 'text-stone-600 hover:text-stone-900'
                                             }`}
                                         >
                                             {cat.label}
@@ -1751,54 +2051,48 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {/* Current options list */}
-                                    <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
-                                        <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2">
-                                            <ListChecks className="w-4 h-4 text-emerald-600" />
-                                            <span className="font-semibold text-slate-900 text-sm">
+                                    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+                                        <div className="px-5 py-3.5 border-b border-stone-100 bg-stone-50 flex items-center gap-2">
+                                            <ListChecks className="w-4 h-4 text-green-900" />
+                                            <span className="font-semibold text-green-900 text-sm">
                                                 {settingsCategory === 'barangay' ? 'Barangay' : settingsCategory === 'sitio_purok' ? 'Sitio / Purok' : 'BEC Cluster'} Options
                                             </span>
                                         </div>
 
-                                        <div className="divide-y divide-slate-100">
+                                        <div className="divide-y divide-stone-100">
                                             {(settingsCategory === 'barangay' ? barangayOptions : settingsCategory === 'sitio_purok' ? sitioPurokOptions : becClusterOptions).map(opt => (
-                                                <div key={opt.id} className="px-4 py-3 flex items-center justify-between gap-2 hover:bg-slate-50/70">
+                                                <div key={opt.id} className="px-5 py-3 flex items-center justify-between gap-2 hover:bg-stone-50 transition-colors">
                                                     {editingOptionId === opt.id ? (
                                                         <div className="flex items-center gap-2 flex-1">
                                                             <input
                                                                 type="text"
                                                                 value={editingOptionLabel}
                                                                 onChange={e => setEditingOptionLabel(e.target.value)}
-                                                                className="flex-1 text-sm px-2 py-1 border border-emerald-400 rounded-lg focus:outline-emerald-600"
+                                                                className="flex-1 text-sm px-2 py-1 border border-green-700 rounded-lg focus:outline-green-800"
                                                                 onKeyDown={e => { if (e.key === 'Enter') handleUpdateOption(opt.id); if (e.key === 'Escape') setEditingOptionId(null); }}
                                                                 autoFocus
                                                             />
-                                                            <button
-                                                                onClick={() => handleUpdateOption(opt.id)}
-                                                                className="p-1 text-emerald-700 hover:bg-emerald-50 rounded"
-                                                            >
+                                                            <button onClick={() => handleUpdateOption(opt.id)} className="p-1 text-green-800 hover:bg-green-50 rounded">
                                                                 <Check className="w-4 h-4" />
                                                             </button>
-                                                            <button
-                                                                onClick={() => setEditingOptionId(null)}
-                                                                className="p-1 text-slate-400 hover:bg-slate-100 rounded"
-                                                            >
+                                                            <button onClick={() => setEditingOptionId(null)} className="p-1 text-stone-400 hover:bg-stone-100 rounded">
                                                                 <X className="w-4 h-4" />
                                                             </button>
                                                         </div>
                                                     ) : (
                                                         <>
-                                                            <span className="text-sm text-slate-800 font-medium">{opt.label}</span>
+                                                            <span className="text-sm text-stone-800 font-medium">{opt.label}</span>
                                                             <div className="flex items-center gap-1">
                                                                 <button
                                                                     onClick={() => { setEditingOptionId(opt.id); setEditingOptionLabel(opt.label); }}
-                                                                    className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                                                    className="p-1.5 text-stone-400 hover:text-green-800 hover:bg-green-50 rounded transition-colors"
                                                                     title="Rename"
                                                                 >
                                                                     <Pencil className="w-3.5 h-3.5" />
                                                                 </button>
                                                                 <button
                                                                     onClick={() => handleDeleteOption(opt.id, opt.label)}
-                                                                    className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                                                                    className="p-1.5 text-stone-400 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
                                                                     title="Delete"
                                                                 >
                                                                     <Trash2 className="w-3.5 h-3.5" />
@@ -1808,21 +2102,18 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                     )}
                                                 </div>
                                             ))}
-
                                             {(settingsCategory === 'barangay' ? barangayOptions : settingsCategory === 'sitio_purok' ? sitioPurokOptions : becClusterOptions).length === 0 && (
-                                                <div className="p-6 text-center text-xs text-slate-400">
-                                                    No options yet. Add one using the form.
-                                                </div>
+                                                <div className="p-6 text-center text-xs text-stone-400">No options yet. Add one using the form on the right.</div>
                                             )}
                                         </div>
                                     </div>
 
                                     {/* Add new option form */}
-                                    <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-5 space-y-4">
+                                    <div className="bg-white rounded-xl border border-stone-200 p-5 space-y-4">
                                         <div>
-                                            <h4 className="font-semibold text-slate-900 text-sm">Add New Option</h4>
-                                            <p className="text-xs text-slate-500 mt-0.5">
-                                                Enter a new {settingsCategory === 'barangay' ? 'barangay name' : settingsCategory === 'sitio_purok' ? 'sitio or purok name' : 'BEC cluster name'}.
+                                            <h4 className="font-semibold text-green-900 text-sm">Add New Option</h4>
+                                            <p className="text-xs text-stone-400 mt-0.5">
+                                                Enter a new {settingsCategory === 'barangay' ? 'barangay name' : settingsCategory === 'sitio_purok' ? 'sitio or purok name' : 'BEC cluster name'} to add it to the dropdown list.
                                             </p>
                                         </div>
 
@@ -1832,20 +2123,20 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                 value={newOptionLabel}
                                                 onChange={e => setNewOptionLabel(e.target.value)}
                                                 placeholder={settingsCategory === 'barangay' ? 'e.g. San Antonio' : settingsCategory === 'sitio_purok' ? 'e.g. Purok 5' : 'e.g. BEC St. Francis'}
-                                                className="flex-1 text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-emerald-600"
+                                                className="flex-1 text-sm px-3 py-2 border border-stone-300 rounded-lg focus:outline-green-800"
                                                 required
                                             />
                                             <button
                                                 type="submit"
-                                                className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 flex items-center gap-1.5 whitespace-nowrap"
+                                                className="px-4 py-2 bg-amber-700 hover:bg-amber-600 text-white rounded-lg text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition-colors"
                                             >
                                                 <Plus className="w-4 h-4" /> Add
                                             </button>
                                         </form>
 
-                                        <div className="pt-3 border-t border-slate-100">
-                                            <p className="text-[11px] text-slate-400">
-                                                Click the <span className="font-medium text-blue-600">pencil icon</span> to rename, or the <span className="font-medium text-rose-600">trash icon</span> to remove an option. Removing an option does not affect households already encoded with that value.
+                                        <div className="pt-3 border-t border-stone-100">
+                                            <p className="text-[11px] text-stone-400">
+                                                Click the <span className="font-medium text-green-800">pencil icon</span> to rename, or the <span className="font-medium text-red-700">trash icon</span> to remove. Removing does not affect households already encoded with that value.
                                             </p>
                                         </div>
                                     </div>

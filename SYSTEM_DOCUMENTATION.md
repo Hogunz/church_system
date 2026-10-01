@@ -64,10 +64,16 @@ sequenceDiagram
    - **Listening Section:** The family's main blessings and difficulties.
 4. The volunteer submits the record. It enters the **Pending Review** queue.
 
-#### Workflow B: Pastor Review & Approval
-1. The Pastor opens the **Pending Surveys** tab.
-2. Clicking **Review Details** displays the complete survey.
-3. The Pastor has two choices:
+#### Workflow B: Pastor Pastoral Intelligence & Survey Review
+1. **Executive Reports & Discernment:** The Pastor's primary dashboard provides actionable reports synthesized directly from the filled-up survey forms:
+   - **Sacramental Readiness:** Baptism backlog (infants vs youth/adults), First Communion candidates (7+), Confirmation backlog (12+), and couples for marriage regularization (*Kasalang Bayan*).
+   - **Sick & Homebound Visit Sheet:** Specific roster of bedridden, elderly, and sick parishioners with exact addresses and contacts for First Friday sick calls.
+   - **Grassroots Evangelization:** Sunday Mass attendance frequency and BEC gathering rates across all clusters and sitios.
+   - **Stewardship Charisms Directory:** Parishioners categorized by talents they offered (Catechists, Choir/Music, Medical/First Aid, Carpentry/Facilities, BEC Leaders, Youth Mentors).
+   - **Actionable Rosters:** Clicking any card opens a printable, searchable roster sheet.
+2. **Pending Survey Review:** The Pastor opens the **Pending Surveys** tab.
+3. Clicking **Review Details** displays the complete survey.
+4. The Pastor has two choices:
    - **Approve & Save Record:** The family is officially accepted into the Parish Master Registry.
    - **Return to Volunteer for Correction:** The Pastor types a note (e.g., *"Please confirm birthdate and baptism venue of 2nd child"*). The status updates to `Returned for Correction`, alerting the volunteer.
 

@@ -3,7 +3,8 @@
 use App\Http\Controllers\ParishSystemController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [ParishSystemController::class, 'index'])->name('home');
+Route::get('/', [ParishSystemController::class, 'welcome'])->name('home');
+Route::get('/welcome', [ParishSystemController::class, 'welcome'])->name('welcome');
 Route::get('/prototype', [ParishSystemController::class, 'index'])->name('prototype');
 Route::post('/households', [ParishSystemController::class, 'storeHousehold'])->name('households.store');
 Route::post('/households/{household}/review', [ParishSystemController::class, 'reviewHousehold'])->name('households.review');
@@ -15,10 +16,8 @@ Route::post('/parish-options', [ParishSystemController::class, 'storeOption'])->
 Route::patch('/parish-options/{parishOption}', [ParishSystemController::class, 'updateOption'])->name('options.update');
 Route::delete('/parish-options/{parishOption}', [ParishSystemController::class, 'destroyOption'])->name('options.destroy');
 
-Route::inertia('/welcome', 'welcome')->name('welcome');
-
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', [ParishSystemController::class, 'dashboard'])->name('dashboard');
 });
 
 require __DIR__.'/settings.php';

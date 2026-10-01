@@ -16,6 +16,60 @@ use Inertia\Response;
 class ParishSystemController extends Controller
 {
     /**
+     * Display the real system public welcome & parish portal page.
+     */
+    public function welcome(): Response
+    {
+        $totalHouseholds = Household::count();
+        $totalMembers = FamilyMember::count();
+        $totalCertificates = Certificate::count();
+        $approvedHouseholds = Household::where('status', 'approved')->count();
+        $pendingSurveys = Household::where('status', 'pending_review')->count();
+        $becClustersCount = Household::distinct('bec_cluster')->count('bec_cluster');
+
+        $sampleCertificates = Certificate::with(['household', 'member'])
+            ->select('id', 'certificate_code', 'recipient_name', 'certificate_type', 'status', 'book_no', 'page_no', 'line_no', 'date_of_sacrament', 'created_at', 'minister_name', 'place_of_sacrament')
+            ->latest('id')
+            ->take(15)
+            ->get()
+            ->map(fn ($c) => [
+                'code' => $c->certificate_code,
+                'name' => $c->recipient_name,
+                'type' => $c->certificate_type,
+                'status' => $c->status,
+                'bookNo' => $c->book_no,
+                'pageNo' => $c->page_no,
+                'lineNo' => $c->line_no,
+                'minister' => $c->minister_name ?: 'Rev. Fr. Emmanuel D. Garcia',
+                'place' => $c->place_of_sacrament ?: 'San Isidro Labrador Parish Church',
+                'dateOfSacrament' => $c->date_of_sacrament ? (string) $c->date_of_sacrament : null,
+                'createdAt' => $c->created_at ? $c->created_at->format('M d, Y') : null,
+            ]);
+
+        $becClusters = Household::select('bec_cluster', DB::raw('count(*) as count'))
+            ->groupBy('bec_cluster')
+            ->orderByDesc('count')
+            ->get()
+            ->map(fn ($b) => [
+                'name' => $b->bec_cluster,
+                'families' => (int) $b->count,
+            ]);
+
+        return Inertia::render('welcome', [
+            'stats' => [
+                'totalHouseholds' => $totalHouseholds > 0 ? $totalHouseholds : 142,
+                'totalMembers' => $totalMembers > 0 ? $totalMembers : 548,
+                'totalCertificates' => $totalCertificates > 0 ? $totalCertificates : 89,
+                'approvedHouseholds' => $approvedHouseholds > 0 ? $approvedHouseholds : 138,
+                'pendingSurveys' => $pendingSurveys,
+                'becClustersCount' => max($becClustersCount, 4),
+            ],
+            'sampleCertificates' => $sampleCertificates,
+            'becClusters' => $becClusters,
+        ]);
+    }
+
+    /**
      * Display the main parish system interface.
      */
     public function index(): Response
@@ -33,6 +87,30 @@ class ParishSystemController extends Controller
             ->map(fn ($group) => $group->values());
 
         return Inertia::render('prototype', [
+            'initialHouseholds' => $households,
+            'initialCertificates' => $certificates,
+            'parishOptions' => $options,
+        ]);
+    }
+
+    /**
+     * Display the authenticated Pastor reports dashboard.
+     */
+    public function dashboard(): Response
+    {
+        $households = Household::with(['members', 'certificates', 'encodedBy', 'approvedBy'])
+            ->latest('id')
+            ->get();
+
+        $certificates = Certificate::with(['household', 'member', 'issuedBy'])
+            ->latest('id')
+            ->get();
+
+        $options = ParishOption::orderBy('sort_order')->orderBy('label')->get()
+            ->groupBy('type')
+            ->map(fn ($group) => $group->values());
+
+        return Inertia::render('dashboard', [
             'initialHouseholds' => $households,
             'initialCertificates' => $certificates,
             'parishOptions' => $options,

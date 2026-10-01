@@ -310,5 +310,242 @@ class DatabaseSeeder extends Seeder
                 'is_church_married' => false,
             ]
         );
+
+        // 5. Household 4: Mendoza Family (Approved, Kasalang Bayan candidate)
+        $mendozaHousehold = Household::updateOrCreate(
+            ['family_code' => 'FAM-2026-0045'],
+            [
+                'family_name' => 'Mendoza',
+                'head_name' => 'Ramon Mendoza',
+                'address' => '88 Mabini Street',
+                'barangay' => 'San Isidro',
+                'sitio_purok' => 'Purok 2',
+                'bec_cluster' => 'BEC San Lorenzo',
+                'contact_number' => '0918-777-6543',
+                'date_encoded' => '2026-09-25',
+                'status' => 'approved',
+                'encoded_by_id' => $volunteer->id,
+                'approved_by_id' => $pastor->id,
+                'approved_at' => now()->subDays(2),
+                'mass_frequency' => 'Every week',
+                'bec_participation' => 'Regular',
+                'pastoral_needs' => ['Sacramental preparation for children', 'Church wedding assistance (Kasalang Bayan)'],
+                'volunteer_skills' => ['Choir & Music', 'Youth Mentorship'],
+                'family_joy' => 'Children are healthy and doing great in school.',
+                'family_concern' => 'Need legal and church guidance to regularize civil marriage.',
+                'how_parish_can_help' => 'Kasalang Bayan marriage seminar and baptism for our baby.',
+                'consent_given' => true,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $mendozaHousehold->id, 'full_name' => 'Ramon Mendoza'],
+            [
+                'relationship' => 'Head',
+                'sex' => 'Male',
+                'age' => 38,
+                'civil_status' => 'Civilly Married',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => false,
+                'is_church_married' => false,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $mendozaHousehold->id, 'full_name' => 'Gina Mendoza'],
+            [
+                'relationship' => 'Spouse',
+                'sex' => 'Female',
+                'age' => 36,
+                'civil_status' => 'Civilly Married',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => true,
+                'is_church_married' => false,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $mendozaHousehold->id, 'full_name' => 'Carlo Mendoza'],
+            [
+                'relationship' => 'Son',
+                'sex' => 'Male',
+                'age' => 10,
+                'civil_status' => 'Single',
+                'is_baptized' => true,
+                'is_first_communion' => false,
+                'is_confirmed' => false,
+                'is_church_married' => false,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $mendozaHousehold->id, 'full_name' => 'Angel Mendoza'],
+            [
+                'relationship' => 'Daughter',
+                'sex' => 'Female',
+                'age' => 1,
+                'civil_status' => 'Single',
+                'is_baptized' => false,
+                'is_first_communion' => false,
+                'is_confirmed' => false,
+                'is_church_married' => false,
+            ]
+        );
+
+        // 6. Household 5: Flores Family (Approved, Homebound Senior)
+        $floresHousehold = Household::updateOrCreate(
+            ['family_code' => 'FAM-2026-0046'],
+            [
+                'family_name' => 'Flores',
+                'head_name' => 'Lito Flores',
+                'address' => '22 Ilang-Ilang St.',
+                'barangay' => 'San Isidro',
+                'sitio_purok' => 'Purok 3',
+                'bec_cluster' => 'BEC St. Jude',
+                'contact_number' => '0920-333-8899',
+                'date_encoded' => '2026-09-26',
+                'status' => 'approved',
+                'encoded_by_id' => $volunteer->id,
+                'approved_by_id' => $pastor->id,
+                'approved_at' => now()->subDays(1),
+                'mass_frequency' => 'Every week',
+                'bec_participation' => 'Regular',
+                'pastoral_needs' => ['Home communion for elderly / sick', 'Pastoral home visit by Parish team'],
+                'volunteer_skills' => ['Medical / First Aid', 'Teaching / Catechesis'],
+                'family_joy' => 'Grateful for wife passing nurse licensing and serving the clinic.',
+                'family_concern' => 'Tatay Mariano is bedridden and cannot walk to church.',
+                'how_parish_can_help' => 'Monthly home communion and anointing of the sick for Tatay Mariano.',
+                'consent_given' => true,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $floresHousehold->id, 'full_name' => 'Lito Flores'],
+            [
+                'relationship' => 'Head',
+                'sex' => 'Male',
+                'age' => 52,
+                'civil_status' => 'Married (Church)',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => true,
+                'is_church_married' => true,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $floresHousehold->id, 'full_name' => 'Carmen Flores'],
+            [
+                'relationship' => 'Spouse',
+                'sex' => 'Female',
+                'age' => 50,
+                'civil_status' => 'Married (Church)',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => true,
+                'is_church_married' => true,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $floresHousehold->id, 'full_name' => 'Mariano Flores'],
+            [
+                'relationship' => 'Parent',
+                'sex' => 'Male',
+                'age' => 82,
+                'civil_status' => 'Widowed',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => true,
+                'is_church_married' => true,
+                'is_homebound' => true,
+                'special_needs' => 'Bedridden senior; stroke survivor needing Viaticum',
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $floresHousehold->id, 'full_name' => 'Paolo Flores'],
+            [
+                'relationship' => 'Son',
+                'sex' => 'Male',
+                'age' => 17,
+                'civil_status' => 'Single',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => false,
+                'is_church_married' => false,
+            ]
+        );
+
+        // 7. Household 6: Bautista Family (Approved, BEC Leader)
+        $bautistaHousehold = Household::updateOrCreate(
+            ['family_code' => 'FAM-2026-0047'],
+            [
+                'family_name' => 'Bautista',
+                'head_name' => 'Noel Bautista',
+                'address' => '56 MacArthur Highway',
+                'barangay' => 'San Isidro',
+                'sitio_purok' => 'Purok 5',
+                'bec_cluster' => 'BEC San Pedro',
+                'contact_number' => '0917-888-9900',
+                'date_encoded' => '2026-09-27',
+                'status' => 'approved',
+                'encoded_by_id' => $volunteer->id,
+                'approved_by_id' => $pastor->id,
+                'approved_at' => now()->subDay(),
+                'mass_frequency' => 'Every week',
+                'bec_participation' => 'Regular',
+                'pastoral_needs' => ['Pastoral home visit by Parish team'],
+                'volunteer_skills' => ['BEC Leader / Coordinator', 'Carpentry & Maintenance', 'Teaching / Catechesis'],
+                'family_joy' => 'Son Joshua successfully completed vocational electrical training.',
+                'family_concern' => 'Need more active volunteers for local purok chapel upkeep.',
+                'how_parish_can_help' => 'Blessing of our house and family workshop.',
+                'consent_given' => true,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $bautistaHousehold->id, 'full_name' => 'Noel Bautista'],
+            [
+                'relationship' => 'Head',
+                'sex' => 'Male',
+                'age' => 48,
+                'civil_status' => 'Married (Church)',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => true,
+                'is_church_married' => true,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $bautistaHousehold->id, 'full_name' => 'Elena Bautista'],
+            [
+                'relationship' => 'Spouse',
+                'sex' => 'Female',
+                'age' => 46,
+                'civil_status' => 'Married (Church)',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => true,
+                'is_church_married' => true,
+            ]
+        );
+
+        FamilyMember::updateOrCreate(
+            ['household_id' => $bautistaHousehold->id, 'full_name' => 'Joshua Bautista'],
+            [
+                'relationship' => 'Son',
+                'sex' => 'Male',
+                'age' => 19,
+                'civil_status' => 'Single',
+                'is_baptized' => true,
+                'is_first_communion' => true,
+                'is_confirmed' => true,
+                'is_church_married' => false,
+            ]
+        );
     }
 }
