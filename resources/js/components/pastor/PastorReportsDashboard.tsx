@@ -30,6 +30,22 @@ export interface FamilyMember {
     isChurchMarried: boolean;
     specialNeeds?: string;
     isHomebound?: boolean;
+    occupation?: string;
+    employmentType?: string;
+    yearsInService?: string;
+    education?: string;
+    maritalSituation?: string;
+    marriageDateParish?: string;
+    needsSacramentPrep?: boolean;
+    isSenior?: boolean;
+    isPwd?: boolean;
+    pwdDetails?: string;
+    needsCommunionAnointing?: boolean;
+    needsPastoralVisit?: boolean;
+    isOutOfSchoolYouth?: boolean;
+    youthMinistryInvolvement?: boolean;
+    parishMinistries?: string[];
+    skillsTalents?: string[];
 }
 
 export interface Household {
@@ -42,6 +58,12 @@ export interface Household {
     sitioPurok: string;
     becCluster: string;
     contactNumber: string;
+    housingSituation?: string;
+    monthlyIncome?: string;
+    isVulnerable?: boolean;
+    livelihoodAssistanceNeeded?: string;
+    pastoralFollowup?: any;
+    trainingNeeds?: string[];
     dateEncoded: string;
     status: 'Pending Review' | 'Approved' | 'Returned for Correction';
     correctionNote?: string;

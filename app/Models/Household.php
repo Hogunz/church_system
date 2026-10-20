@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'sitio_purok',
     'bec_cluster',
     'contact_number',
+    'housing_situation',
+    'monthly_income',
+    'is_vulnerable',
+    'livelihood_assistance_needed',
     'date_encoded',
     'status',
     'correction_notes',
@@ -27,6 +31,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'family_joy',
     'family_concern',
     'how_parish_can_help',
+    'pastoral_followup',
+    'training_needs',
     'consent_given',
     'encoded_by_id',
     'approved_by_id',
@@ -45,8 +51,11 @@ class Household extends Model
     {
         return [
             'date_encoded' => 'date',
+            'is_vulnerable' => 'boolean',
             'pastoral_needs' => 'array',
             'volunteer_skills' => 'array',
+            'pastoral_followup' => 'array',
+            'training_needs' => 'array',
             'consent_given' => 'boolean',
             'approved_at' => 'datetime',
         ];

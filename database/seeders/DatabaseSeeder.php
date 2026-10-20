@@ -48,6 +48,10 @@ class DatabaseSeeder extends Seeder
                 'sitio_purok' => 'Purok 3',
                 'bec_cluster' => 'BEC St. Jude',
                 'contact_number' => '0917-555-1234',
+                'housing_situation' => 'Owned House & Lot',
+                'monthly_income' => '₱10,001 – ₱15,000',
+                'is_vulnerable' => true,
+                'livelihood_assistance_needed' => 'Small capital grant for grocery restocking',
                 'date_encoded' => '2026-09-20',
                 'status' => 'approved',
                 'encoded_by_id' => $volunteer->id,
@@ -55,10 +59,17 @@ class DatabaseSeeder extends Seeder
                 'approved_at' => now()->subDays(5),
                 'mass_frequency' => 'Every week',
                 'bec_participation' => 'Regular',
-                'pastoral_needs' => ['Home communion for elderly grandmother'],
+                'pastoral_needs' => ['Home communion for elderly grandmother', 'Youth catechesis for junior high students'],
+                'training_needs' => ['Health Care & First Aid (Midwifery/Nursing)', 'Basic Computer Literacy & Online Jobs'],
+                'pastoral_followup' => [
+                    'regular_communion' => true,
+                    'house_blessing' => true,
+                    'counseling' => false,
+                    'livelihood_referral' => true,
+                ],
                 'volunteer_skills' => ['Teaching / Catechesis', 'Choir & Music'],
                 'family_joy' => 'Grateful for good health and eldest son graduating high school.',
-                'family_concern' => 'Rising prices of basic medicine and groceries.',
+                'family_concern' => 'Rising prices of basic medicine and groceries for Lola Rosa.',
                 'how_parish_can_help' => 'Monthly home visit for Lola Rosa to receive Holy Communion.',
                 'consent_given' => true,
             ]
@@ -95,10 +106,18 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 45,
                 'civil_status' => 'Married (Church)',
+                'occupation' => 'Carpenter / Construction',
+                'employment_type' => 'Self-employed / Daily Wage',
+                'years_in_service' => '15 years',
+                'education' => 'High School Graduate',
+                'marital_situation' => 'Canonical Marriage (Church)',
+                'marriage_date_parish' => '2005-06-18, San Isidro Labrador Parish',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => true,
+                'parish_ministries' => ['Liturgy & Worship', 'Stewardship'],
+                'skills_talents' => ['Carpentry & Repairs', 'Choir & Music'],
             ]
         );
 
@@ -109,10 +128,18 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Female',
                 'age' => 43,
                 'civil_status' => 'Married (Church)',
+                'occupation' => 'Sari-sari Store Keeper',
+                'employment_type' => 'Self-employed / Informal',
+                'years_in_service' => '8 years',
+                'education' => 'Vocational / TVET',
+                'marital_situation' => 'Canonical Marriage (Church)',
+                'marriage_date_parish' => '2005-06-18, San Isidro Labrador Parish',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => true,
+                'parish_ministries' => ['Catechetical Ministry', 'BEC St. Jude Core Team'],
+                'skills_talents' => ['Teaching / Catechesis', 'Cooking & Food Service'],
             ]
         );
 
@@ -123,10 +150,15 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 12,
                 'civil_status' => 'Single',
+                'occupation' => 'Junior High Student',
+                'education' => 'Elementary Graduate',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
+                'parish_ministries' => ['Altar Server Guild'],
+                'skills_talents' => ['Altar Serving', 'Acoustic Guitar'],
             ]
         );
 
@@ -137,10 +169,13 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Female',
                 'age' => 8,
                 'civil_status' => 'Single',
+                'occupation' => 'Elementary Student',
+                'education' => 'Primary Level',
                 'is_baptized' => true,
                 'is_first_communion' => false,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
             ]
         );
 
@@ -151,12 +186,17 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Female',
                 'age' => 78,
                 'civil_status' => 'Widowed',
+                'occupation' => 'Retired / Senior Parishioner',
+                'education' => 'Elementary Graduate',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => true,
+                'is_senior' => true,
                 'is_homebound' => true,
-                'special_needs' => 'Homebound elderly; difficulty walking',
+                'needs_communion_anointing' => true,
+                'needs_pastoral_visit' => true,
+                'special_needs' => 'Homebound elderly; stroke recovery; difficulty walking',
             ]
         );
 
@@ -212,12 +252,23 @@ class DatabaseSeeder extends Seeder
                 'sitio_purok' => 'Purok 1',
                 'bec_cluster' => 'BEC San Pedro',
                 'contact_number' => '0928-888-4321',
+                'housing_situation' => 'Informal Settler / Danger Zone',
+                'monthly_income' => 'Below ₱10,000 (Low income)',
+                'is_vulnerable' => true,
+                'livelihood_assistance_needed' => 'Livelihood capital for vegetable vending cart',
+                'training_needs' => ['Culinary Arts & Food Processing', 'Welding & Electrical Installation'],
+                'pastoral_followup' => [
+                    'regular_communion' => false,
+                    'house_blessing' => true,
+                    'counseling' => true,
+                    'livelihood_referral' => true,
+                ],
                 'date_encoded' => '2026-09-24',
                 'status' => 'pending_review',
                 'encoded_by_id' => $volunteer->id,
                 'mass_frequency' => 'Occasionally',
                 'bec_participation' => 'Sometimes',
-                'pastoral_needs' => ['Sacramental preparation for children', 'Church wedding guidance'],
+                'pastoral_needs' => ['Sacramental preparation for children', 'Church wedding guidance (Kasalang Bayan)'],
                 'volunteer_skills' => ['Carpentry & Repairs'],
                 'family_joy' => 'New baby born healthy last month.',
                 'family_concern' => 'Seasonal farming income uncertainty.',
@@ -233,10 +284,17 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 34,
                 'civil_status' => 'Civilly Married',
+                'occupation' => 'Tricycle Driver / Daily Wage',
+                'employment_type' => 'Self-employed / Daily Wage',
+                'education' => 'High School Level',
+                'marital_situation' => 'Civil Marriage Only',
+                'marriage_date_parish' => '2019-03-10, City Civil Registrar',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
+                'skills_talents' => ['Carpentry & Maintenance', 'Vehicle Maintenance'],
             ]
         );
 
@@ -247,10 +305,17 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Female',
                 'age' => 32,
                 'civil_status' => 'Civilly Married',
+                'occupation' => 'Market Vendor (Vegetables)',
+                'employment_type' => 'Self-employed / Informal',
+                'education' => 'High School Graduate',
+                'marital_situation' => 'Civil Marriage Only',
+                'marriage_date_parish' => '2019-03-10, City Civil Registrar',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
+                'skills_talents' => ['Food Processing & Preservation'],
             ]
         );
 
@@ -261,10 +326,13 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 3,
                 'civil_status' => 'Single',
+                'occupation' => 'Toddler',
+                'education' => 'None',
                 'is_baptized' => false,
                 'is_first_communion' => false,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
             ]
         );
 
@@ -279,6 +347,17 @@ class DatabaseSeeder extends Seeder
                 'sitio_purok' => 'Purok 4',
                 'bec_cluster' => 'BEC St. Jude',
                 'contact_number' => '0919-222-3344',
+                'housing_situation' => 'Living with Extended Family / Relatives',
+                'monthly_income' => 'Below ₱10,000 (Low income)',
+                'is_vulnerable' => true,
+                'livelihood_assistance_needed' => 'Vocational training scholarship for eldest youth',
+                'training_needs' => ['Carpentry & Basic Construction', 'Automotive Servicing & Small Engine Repair'],
+                'pastoral_followup' => [
+                    'regular_communion' => false,
+                    'house_blessing' => true,
+                    'counseling' => true,
+                    'livelihood_referral' => true,
+                ],
                 'date_encoded' => '2026-09-22',
                 'status' => 'returned_for_correction',
                 'correction_notes' => 'Please clarify date of birth for eldest child and confirm if Father Carmelo is open to home visit.',
@@ -301,10 +380,16 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 41,
                 'civil_status' => 'Single',
+                'occupation' => 'Mason / Construction Helper',
+                'employment_type' => 'Contractual / Project-based',
+                'education' => 'High School Level',
                 'is_baptized' => true,
                 'is_first_communion' => false,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
+                'needs_pastoral_visit' => true,
+                'skills_talents' => ['Carpentry & Maintenance'],
             ]
         );
 
@@ -315,10 +400,15 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 14,
                 'civil_status' => 'Single',
+                'occupation' => 'Youth',
+                'education' => 'Elementary Level',
+                'is_out_of_school_youth' => true,
                 'is_baptized' => false,
                 'is_first_communion' => false,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
+                'special_needs' => 'Out-of-school youth; interested in TVET skills scholarship',
             ]
         );
 
@@ -333,6 +423,16 @@ class DatabaseSeeder extends Seeder
                 'sitio_purok' => 'Purok 2',
                 'bec_cluster' => 'BEC San Lorenzo',
                 'contact_number' => '0918-777-6543',
+                'housing_situation' => 'Rented House / Apartment',
+                'monthly_income' => '₱15,001 – ₱25,000',
+                'is_vulnerable' => false,
+                'training_needs' => ['Graphic Design & Digital Marketing', 'Events & Hospitality Management'],
+                'pastoral_followup' => [
+                    'regular_communion' => true,
+                    'house_blessing' => true,
+                    'counseling' => false,
+                    'livelihood_referral' => false,
+                ],
                 'date_encoded' => '2026-09-25',
                 'status' => 'approved',
                 'encoded_by_id' => $volunteer->id,
@@ -356,10 +456,18 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 38,
                 'civil_status' => 'Civilly Married',
+                'occupation' => 'Logistics Courier / Rider',
+                'employment_type' => 'Contractual / Project-based',
+                'education' => 'College Level',
+                'marital_situation' => 'Civil Marriage Only',
+                'marriage_date_parish' => '2015-08-20, City Hall',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
+                'parish_ministries' => ['Music Ministry / Choir'],
+                'skills_talents' => ['Choir & Music', 'Youth Mentorship'],
             ]
         );
 
@@ -370,10 +478,18 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Female',
                 'age' => 36,
                 'civil_status' => 'Civilly Married',
+                'occupation' => 'Accounting Clerk',
+                'employment_type' => 'Employed / Regular Wage',
+                'education' => 'College Graduate',
+                'marital_situation' => 'Civil Marriage Only',
+                'marriage_date_parish' => '2015-08-20, City Hall',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
+                'parish_ministries' => ['Finance & Stewardship Council'],
+                'skills_talents' => ['Teaching / Catechesis', 'Finance / Bookkeeping'],
             ]
         );
 
@@ -384,10 +500,13 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 10,
                 'civil_status' => 'Single',
+                'occupation' => 'Elementary Student',
+                'education' => 'Elementary Level',
                 'is_baptized' => true,
                 'is_first_communion' => false,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
             ]
         );
 
@@ -398,10 +517,13 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Female',
                 'age' => 1,
                 'civil_status' => 'Single',
+                'occupation' => 'Infant',
+                'education' => 'None',
                 'is_baptized' => false,
                 'is_first_communion' => false,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
             ]
         );
 
@@ -416,6 +538,16 @@ class DatabaseSeeder extends Seeder
                 'sitio_purok' => 'Purok 3',
                 'bec_cluster' => 'BEC St. Jude',
                 'contact_number' => '0920-333-8899',
+                'housing_situation' => 'Owned House & Lot',
+                'monthly_income' => '₱25,001 – ₱40,000',
+                'is_vulnerable' => true,
+                'training_needs' => ['Health Care & First Aid (Midwifery/Nursing)', 'Basic Computer Literacy & Online Jobs'],
+                'pastoral_followup' => [
+                    'regular_communion' => true,
+                    'house_blessing' => false,
+                    'counseling' => false,
+                    'livelihood_referral' => false,
+                ],
                 'date_encoded' => '2026-09-26',
                 'status' => 'approved',
                 'encoded_by_id' => $volunteer->id,
@@ -439,10 +571,16 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 52,
                 'civil_status' => 'Married (Church)',
+                'occupation' => 'Government Employee (LGU)',
+                'employment_type' => 'Employed / Regular Wage',
+                'education' => 'College Graduate',
+                'marital_situation' => 'Canonical Marriage (Church)',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => true,
+                'parish_ministries' => ['Lector & Commentator Guild'],
+                'skills_talents' => ['Public Speaking / Lecturing', 'BEC Leadership'],
             ]
         );
 
@@ -453,10 +591,16 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Female',
                 'age' => 50,
                 'civil_status' => 'Married (Church)',
+                'occupation' => 'Barangay Health Worker / Nurse',
+                'employment_type' => 'Employed / Regular Wage',
+                'education' => 'College Graduate',
+                'marital_situation' => 'Canonical Marriage (Church)',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => true,
+                'parish_ministries' => ['Parish Health Ministry'],
+                'skills_talents' => ['Medical / First Aid', 'Teaching / Catechesis'],
             ]
         );
 
@@ -467,11 +611,16 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 82,
                 'civil_status' => 'Widowed',
+                'occupation' => 'Senior / Bedridden',
+                'education' => 'Elementary Level',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => true,
+                'is_senior' => true,
                 'is_homebound' => true,
+                'needs_communion_anointing' => true,
+                'needs_pastoral_visit' => true,
                 'special_needs' => 'Bedridden senior; stroke survivor needing Viaticum',
             ]
         );
@@ -483,10 +632,16 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 17,
                 'civil_status' => 'Single',
+                'occupation' => 'Senior High Student',
+                'education' => 'High School Level',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => false,
                 'is_church_married' => false,
+                'needs_sacrament_prep' => true,
+                'youth_ministry_involvement' => true,
+                'parish_ministries' => ['Parish Youth Ministry (PYM)'],
+                'skills_talents' => ['Choir & Music', 'Youth Mentorship'],
             ]
         );
 
@@ -501,6 +656,16 @@ class DatabaseSeeder extends Seeder
                 'sitio_purok' => 'Purok 5',
                 'bec_cluster' => 'BEC San Pedro',
                 'contact_number' => '0917-888-9900',
+                'housing_situation' => 'Owned House & Lot',
+                'monthly_income' => '₱25,001 – ₱40,000',
+                'is_vulnerable' => false,
+                'training_needs' => ['Welding & Electrical Installation', 'Carpentry & Basic Construction'],
+                'pastoral_followup' => [
+                    'regular_communion' => false,
+                    'house_blessing' => true,
+                    'counseling' => false,
+                    'livelihood_referral' => false,
+                ],
                 'date_encoded' => '2026-09-27',
                 'status' => 'approved',
                 'encoded_by_id' => $volunteer->id,
@@ -524,10 +689,16 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Male',
                 'age' => 48,
                 'civil_status' => 'Married (Church)',
+                'occupation' => 'Electrical Contractor / Electrician',
+                'employment_type' => 'Self-employed / Licensed',
+                'education' => 'Vocational / TVET Graduate',
+                'marital_situation' => 'Canonical Marriage (Church)',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => true,
+                'parish_ministries' => ['BEC San Pedro Leadership', 'Parish Maintenance Committee'],
+                'skills_talents' => ['Carpentry & Maintenance', 'Electrical Installation'],
             ]
         );
 
@@ -538,10 +709,16 @@ class DatabaseSeeder extends Seeder
                 'sex' => 'Female',
                 'age' => 46,
                 'civil_status' => 'Married (Church)',
+                'occupation' => 'Dentist / Private Clinic',
+                'employment_type' => 'Self-employed / Professional',
+                'education' => 'Post-Graduate / Doctorate',
+                'marital_situation' => 'Canonical Marriage (Church)',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => true,
+                'parish_ministries' => ['Parish Pastoral Council (PPC)', 'Medical/Dental Mission Team'],
+                'skills_talents' => ['Medical / First Aid', 'PPC Leadership'],
             ]
         );
 
@@ -550,12 +727,18 @@ class DatabaseSeeder extends Seeder
             [
                 'relationship' => 'Son',
                 'sex' => 'Male',
-                'age' => 19,
+                'age' => 20,
                 'civil_status' => 'Single',
+                'occupation' => 'Electrician Apprentice',
+                'employment_type' => 'Employed / Contractual',
+                'education' => 'Vocational / TVET',
                 'is_baptized' => true,
                 'is_first_communion' => true,
                 'is_confirmed' => true,
                 'is_church_married' => false,
+                'youth_ministry_involvement' => true,
+                'parish_ministries' => ['Parish Youth Ministry (PYM)'],
+                'skills_talents' => ['Electrical Maintenance', 'Youth Mentorship'],
             ]
         );
     }

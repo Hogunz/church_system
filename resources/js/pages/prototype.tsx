@@ -16,6 +16,7 @@ import {
     ShieldAlert,
     ChevronRight,
     ChevronLeft,
+    ChevronDown,
     Check,
     X,
     Filter,
@@ -32,28 +33,52 @@ import {
     Home,
     BarChart3,
     HeartPulse,
-    Baby
+    Baby,
+    GraduationCap,
+    Briefcase,
+    Building,
+    BookOpen,
+    ClipboardCheck
 } from 'lucide-react';
 import PastorReportsDashboard from '@/components/pastor/PastorReportsDashboard';
+import MemberSurveyModal from '@/components/volunteer/MemberSurveyModal';
 
 // --- TYPES ---
-interface FamilyMember {
+export interface FamilyMember {
     id: string;
     dbId?: number;
     fullName: string;
     relationship: 'Head' | 'Spouse' | 'Son' | 'Daughter' | 'Parent' | 'Relative' | 'Other';
     sex: 'Male' | 'Female';
     age: number;
+    birthdate?: string;
     civilStatus: 'Single' | 'Married (Church)' | 'Civilly Married' | 'Cohabiting' | 'Widowed' | 'Separated';
+    // Questionnaire additions:
+    occupation?: string;
+    employmentType?: string;
+    yearsInService?: string;
+    education?: string;
+    maritalSituation?: string;
+    marriageDateParish?: string;
     isBaptized: boolean;
     isFirstCommunion: boolean;
     isConfirmed: boolean;
     isChurchMarried: boolean;
-    specialNeeds?: string;
+    needsSacramentPrep?: boolean;
     isHomebound?: boolean;
+    specialNeeds?: string;
+    isSenior?: boolean;
+    isPwd?: boolean;
+    pwdDetails?: string;
+    needsCommunionAnointing?: boolean;
+    needsPastoralVisit?: boolean;
+    isOutOfSchoolYouth?: boolean;
+    youthMinistryInvolvement?: boolean;
+    parishMinistries?: string[];
+    skillsTalents?: string[];
 }
 
-interface Household {
+export interface Household {
     id: string;
     dbId?: number;
     familyName: string;
@@ -63,6 +88,20 @@ interface Household {
     sitioPurok: string;
     becCluster: string;
     contactNumber: string;
+    // Questionnaire additions:
+    housingSituation?: string;
+    monthlyIncome?: string;
+    isVulnerable?: boolean;
+    livelihoodAssistanceNeeded?: string;
+    pastoralFollowup?: {
+        homeVisits?: boolean;
+        referral?: string;
+        assistanceProvided?: string;
+        sacramentalFollowup?: boolean;
+        ministryResponsible?: string;
+        nextPastoralAction?: string;
+    };
+    trainingNeeds?: string[];
     dateEncoded: string;
     status: 'Pending Review' | 'Approved' | 'Returned for Correction';
     correctionNote?: string;
@@ -101,6 +140,20 @@ interface CertificateRecord {
     declineReason?: string;
 }
 
+export const UNIVERSITY_TRAINING_TOPICS = [
+    'Digital Literacy for Everyday Life (using smartphones, QR codes, government e-services)',
+    'Basic Accounting & Bookkeeping for Micro-Enterprises',
+    'Building Saving & Emergency Fund',
+    'Basic First Aid & Disaster Risk Reduction / Emergency Preparedness',
+    'Nutrition for Non-Communicable Diseases (Hypertension, Diabetes)',
+    'Maternal and Child Healthcare & Immunization',
+    'Small Business Start-up & Agri-business Opportunities',
+    'Basic Electrical, Plumbing & Carpentry Maintenance',
+    'English & Tagalog Communication & Work Readiness',
+    'Parenting in the Digital Age & Youth Guidance',
+    'Environmental Care & Solid Waste Segregation (Laudato Si\')',
+];
+
 // Initial Sample Data (San Isidro Parish)
 const INITIAL_HOUSEHOLDS: Household[] = [
     {
@@ -115,13 +168,28 @@ const INITIAL_HOUSEHOLDS: Household[] = [
         dateEncoded: '2026-09-20',
         status: 'Approved',
         encodedBy: 'Ana Ramos (Volunteer)',
+        housingSituation: 'Owned (Sariling Bahay at Lupa)',
+        monthlyIncome: '₱10,001 – ₱15,000',
+        isVulnerable: false,
         massFrequency: 'Every week',
         becParticipation: 'Regular',
-        pastoralNeeds: ['Home communion for elderly grandmother'],
-        volunteerSkills: ['Teaching / Catechesis', 'Choir & Music'],
+        pastoralNeeds: ['Home communion for elderly grandmother', 'Youth catechesis for daughter'],
+        volunteerSkills: ['Teaching / Catechesis', 'Choir & Music', 'Carpentry & Maintenance'],
         familyJoy: 'Grateful for good health and eldest son graduating high school.',
         familyConcern: 'Rising prices of basic medicine and groceries.',
         howParishCanHelp: 'Monthly home visit for Lola Rosa to receive Holy Communion.',
+        pastoralFollowup: {
+            homeVisits: true,
+            referral: 'Barangay Health Center',
+            assistanceProvided: 'First Friday Communion visit scheduled',
+            sacramentalFollowup: false,
+            nextPastoralAction: 'BEC St. Jude home visit on 1st Friday of the month',
+        },
+        trainingNeeds: [
+            'Digital Literacy for Everyday Life (using smartphones, QR codes, government e-services)',
+            'Building Saving & Emergency Fund',
+            'Nutrition for Non-Communicable Diseases (Hypertension, Diabetes)',
+        ],
         consentGiven: true,
         members: [
             {
@@ -131,10 +199,17 @@ const INITIAL_HOUSEHOLDS: Household[] = [
                 sex: 'Male',
                 age: 45,
                 civilStatus: 'Married (Church)',
+                occupation: 'Carpenter & Small Contractor',
+                employmentType: 'Self-employed / Business Owner',
+                yearsInService: 'More than 10 years',
+                education: 'High School Level / Graduate',
+                maritalSituation: 'Sacramental (Church)',
                 isBaptized: true,
                 isFirstCommunion: true,
                 isConfirmed: true,
                 isChurchMarried: true,
+                parishMinistries: ['Facilities & Maintenance'],
+                skillsTalents: ['Carpentry & Maintenance'],
             },
             {
                 id: 'm-2',
@@ -143,34 +218,51 @@ const INITIAL_HOUSEHOLDS: Household[] = [
                 sex: 'Female',
                 age: 43,
                 civilStatus: 'Married (Church)',
+                occupation: 'Market Vendor (Sari-Sari)',
+                employmentType: 'Self-employed / Business Owner',
+                yearsInService: '5–10 years',
+                education: 'High School Level / Graduate',
+                maritalSituation: 'Sacramental (Church)',
                 isBaptized: true,
                 isFirstCommunion: true,
                 isConfirmed: true,
                 isChurchMarried: true,
+                parishMinistries: ['Choir & Music Ministry'],
+                skillsTalents: ['Choir & Music'],
             },
             {
                 id: 'm-3',
                 fullName: 'Juan Santos',
                 relationship: 'Son',
                 sex: 'Male',
-                age: 12,
+                age: 16,
                 civilStatus: 'Single',
+                occupation: 'High School Student',
+                employmentType: 'Student',
+                education: 'High School Level / Graduate',
                 isBaptized: true,
                 isFirstCommunion: true,
-                isConfirmed: false,
+                isConfirmed: true,
                 isChurchMarried: false,
+                youthMinistryInvolvement: true,
+                parishMinistries: ['Youth Ministry', 'Altar Server'],
+                skillsTalents: ['Youth Mentorship', 'Sports'],
             },
             {
                 id: 'm-4',
                 fullName: 'Sofia Santos',
                 relationship: 'Daughter',
                 sex: 'Female',
-                age: 8,
+                age: 9,
                 civilStatus: 'Single',
+                occupation: 'Elementary Student',
+                employmentType: 'Student',
+                education: 'Elementary Level / Graduate',
                 isBaptized: true,
                 isFirstCommunion: false,
                 isConfirmed: false,
                 isChurchMarried: false,
+                needsSacramentPrep: true,
             },
             {
                 id: 'm-5',
@@ -179,12 +271,18 @@ const INITIAL_HOUSEHOLDS: Household[] = [
                 sex: 'Female',
                 age: 78,
                 civilStatus: 'Widowed',
+                occupation: 'Retired / Senior',
+                employmentType: 'Retired',
+                education: 'Elementary Level / Graduate',
                 isBaptized: true,
                 isFirstCommunion: true,
                 isConfirmed: true,
                 isChurchMarried: true,
+                isSenior: true,
                 isHomebound: true,
-                specialNeeds: 'Homebound elderly; difficulty walking',
+                needsCommunionAnointing: true,
+                needsPastoralVisit: true,
+                specialNeeds: 'Homebound senior grandmother; needs home Holy Communion',
             }
         ]
     },
@@ -200,13 +298,29 @@ const INITIAL_HOUSEHOLDS: Household[] = [
         dateEncoded: '2026-09-24',
         status: 'Pending Review',
         encodedBy: 'Mark Villanueva (Volunteer)',
+        housingSituation: 'Renting (Upa)',
+        monthlyIncome: '₱5,000 – ₱10,000',
+        isVulnerable: true,
+        livelihoodAssistanceNeeded: 'Seed capital for seasonal farming and vegetable retail',
         massFrequency: 'Occasionally',
         becParticipation: 'Sometimes',
-        pastoralNeeds: ['Sacramental preparation for children', 'Church wedding guidance'],
+        pastoralNeeds: ['Sacramental preparation for children', 'Church wedding guidance (Kasalang Bayan)'],
         volunteerSkills: ['Carpentry & Repairs'],
         familyJoy: 'New baby born healthy last month.',
         familyConcern: 'Seasonal farming income uncertainty.',
         howParishCanHelp: 'Assistance for civil marriage regularization (Kasalang Bayan) and baptism for infant.',
+        pastoralFollowup: {
+            homeVisits: true,
+            referral: 'Caritas Parish Social Action',
+            assistanceProvided: 'Food pack and wedding documentation assistance',
+            sacramentalFollowup: true,
+            nextPastoralAction: 'Counseling for Kasalang Bayan wedding on Dec 10',
+        },
+        trainingNeeds: [
+            'Small Business Start-up & Agri-business Opportunities',
+            'Building Saving & Emergency Fund',
+            'Parenting in the Digital Age & Youth Guidance',
+        ],
         consentGiven: true,
         members: [
             {
@@ -216,10 +330,14 @@ const INITIAL_HOUSEHOLDS: Household[] = [
                 sex: 'Male',
                 age: 34,
                 civilStatus: 'Civilly Married',
+                occupation: 'Seasonal Farmer & Laborer',
+                employmentType: 'Daily / Casual Worker',
+                education: 'High School Level / Graduate',
                 isBaptized: true,
                 isFirstCommunion: true,
                 isConfirmed: false,
                 isChurchMarried: false,
+                skillsTalents: ['Carpentry & Maintenance'],
             },
             {
                 id: 'm-7',
@@ -228,6 +346,9 @@ const INITIAL_HOUSEHOLDS: Household[] = [
                 sex: 'Female',
                 age: 32,
                 civilStatus: 'Civilly Married',
+                occupation: 'Homemaker',
+                employmentType: 'Homemaker',
+                education: 'High School Level / Graduate',
                 isBaptized: true,
                 isFirstCommunion: true,
                 isConfirmed: true,
@@ -240,10 +361,12 @@ const INITIAL_HOUSEHOLDS: Household[] = [
                 sex: 'Male',
                 age: 3,
                 civilStatus: 'Single',
+                education: 'Preschool / Early Childhood',
                 isBaptized: false,
                 isFirstCommunion: false,
                 isConfirmed: false,
                 isChurchMarried: false,
+                needsSacramentPrep: true,
             }
         ]
     },
@@ -260,6 +383,10 @@ const INITIAL_HOUSEHOLDS: Household[] = [
         status: 'Returned for Correction',
         correctionNote: 'Please clarify date of birth for eldest child and confirm if Father Carmelo is open to home visit.',
         encodedBy: 'Ana Ramos (Volunteer)',
+        housingSituation: 'Informal Settler / Living with Relatives',
+        monthlyIncome: 'Under ₱5,000',
+        isVulnerable: true,
+        livelihoodAssistanceNeeded: 'Medical aid and shelter reinforcement assistance',
         massFrequency: 'Rarely / Never',
         becParticipation: 'Not active',
         pastoralNeeds: ['Pastoral home visit', 'Youth catechesis'],
@@ -267,6 +394,17 @@ const INITIAL_HOUSEHOLDS: Household[] = [
         familyJoy: 'Children doing well in public school.',
         familyConcern: 'Flooding in riverside area during monsoon rains.',
         howParishCanHelp: 'Visit from the parish team or BEC leaders.',
+        pastoralFollowup: {
+            homeVisits: true,
+            referral: 'Barangay Disaster Risk & Health Unit',
+            assistanceProvided: 'Emergency relief assessment',
+            sacramentalFollowup: true,
+            nextPastoralAction: 'PPC home accompaniment visit scheduled',
+        },
+        trainingNeeds: [
+            'Basic First Aid & Disaster Risk Reduction / Emergency Preparedness',
+            'Nutrition for Non-Communicable Diseases (Hypertension, Diabetes)',
+        ],
         consentGiven: true,
         members: [
             {
@@ -561,6 +699,12 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
         sitioPurok: h.sitio_purok,
         becCluster: h.bec_cluster,
         contactNumber: h.contact_number || '',
+        housingSituation: h.housing_situation || 'Owned',
+        monthlyIncome: h.monthly_income || '₱10,001 – ₱15,000',
+        isVulnerable: Boolean(h.is_vulnerable),
+        livelihoodAssistanceNeeded: h.livelihood_assistance_needed || '',
+        pastoralFollowup: h.pastoral_followup || {},
+        trainingNeeds: Array.isArray(h.training_needs) ? h.training_needs : [],
         dateEncoded: h.date_encoded ? String(h.date_encoded).split('T')[0] : '',
         status: h.status === 'approved' ? 'Approved' : h.status === 'returned_for_correction' ? 'Returned for Correction' : 'Pending Review',
         correctionNote: h.correction_notes,
@@ -580,13 +724,30 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
             relationship: m.relationship,
             sex: m.sex || 'Male',
             age: m.age || 0,
+            birthdate: m.birthdate ? String(m.birthdate).split('T')[0] : undefined,
             civilStatus: m.civil_status || 'Single',
+            occupation: m.occupation || '',
+            employmentType: m.employment_type || '',
+            yearsInService: m.years_in_service || '',
+            education: m.education || '',
+            maritalSituation: m.marital_situation || '',
+            marriageDateParish: m.marriage_date_parish || '',
             isBaptized: Boolean(m.is_baptized),
             isFirstCommunion: Boolean(m.is_first_communion),
             isConfirmed: Boolean(m.is_confirmed),
             isChurchMarried: Boolean(m.is_church_married),
+            needsSacramentPrep: Boolean(m.needs_sacrament_prep),
             isHomebound: Boolean(m.is_homebound),
             specialNeeds: m.special_needs,
+            isSenior: Boolean(m.is_senior || (m.age >= 60)),
+            isPwd: Boolean(m.is_pwd),
+            pwdDetails: m.pwd_details || '',
+            needsCommunionAnointing: Boolean(m.needs_communion_anointing),
+            needsPastoralVisit: Boolean(m.needs_pastoral_visit),
+            isOutOfSchoolYouth: Boolean(m.is_out_of_school_youth),
+            youthMinistryInvolvement: Boolean(m.youth_ministry_involvement),
+            parishMinistries: Array.isArray(m.parish_ministries) ? m.parish_ministries : [],
+            skillsTalents: Array.isArray(m.skills_talents) ? m.skills_talents : [],
         })),
     });
 
@@ -665,22 +826,90 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
     const [formFamilyName, setFormFamilyName] = useState('');
     const [formHeadName, setFormHeadName] = useState('');
     const [formAddress, setFormAddress] = useState('');
+    const [formTown, setFormTown] = useState('San Isidro');
+    const [formProvince, setFormProvince] = useState('Pangasinan');
     const [formBarangay, setFormBarangay] = useState('San Isidro');
     const [formSitio, setFormSitio] = useState('Purok 2');
     const [formBec, setFormBec] = useState('BEC St. Jude');
     const [formContact, setFormContact] = useState('');
+
+    // Area 8: Housing & Socio-Economic Status (Household level)
+    const [formHousing, setFormHousing] = useState<string>('Owned');
+    const [formIncome, setFormIncome] = useState<string>('₱10,001 – ₱15,000');
+    const [formIsVulnerable, setFormIsVulnerable] = useState<boolean>(false);
+    const [formLivelihoodAssistance, setFormLivelihoodAssistance] = useState<string>('');
+
+    // Area 12: Pastoral Follow-up & Community Training Needs
+    const [formFollowupHomeVisits, setFormFollowupHomeVisits] = useState<boolean>(false);
+    const [formFollowupReferral, setFormFollowupReferral] = useState<string>('');
+    const [formFollowupAssistance, setFormFollowupAssistance] = useState<string>('');
+    const [formFollowupSacrament, setFormFollowupSacrament] = useState<boolean>(false);
+    const [formFollowupNextAction, setFormFollowupNextAction] = useState<string>('');
+    const [formTrainingNeeds, setFormTrainingNeeds] = useState<string[]>([
+        'Digital Literacy for Everyday Life (using smartphones, QR codes, government e-services)',
+        'Building Saving & Emergency Fund',
+    ]);
+
+    // Smart Member Modal State
+    const [isMemberModalOpen, setIsMemberModalOpen] = useState<boolean>(false);
+    const [editingMemberIndex, setEditingMemberIndex] = useState<number | null>(null);
+    const [memberDraft, setMemberDraft] = useState<FamilyMember>({
+        id: 'new-1',
+        fullName: '',
+        relationship: 'Head',
+        sex: 'Male',
+        age: 40,
+        birthdate: '1986-06-15',
+        civilStatus: 'Married (Church)',
+        occupation: '',
+        employmentType: 'Permanent',
+        yearsInService: '1–5 years',
+        education: 'College Level / Graduate',
+        maritalSituation: 'Sacramental',
+        marriageDateParish: '',
+        isBaptized: true,
+        isFirstCommunion: true,
+        isConfirmed: true,
+        isChurchMarried: true,
+        needsSacramentPrep: false,
+        isHomebound: false,
+        specialNeeds: '',
+        isSenior: false,
+        isPwd: false,
+        pwdDetails: '',
+        needsCommunionAnointing: false,
+        needsPastoralVisit: false,
+        isOutOfSchoolYouth: false,
+        youthMinistryInvolvement: false,
+        parishMinistries: [],
+        skillsTalents: [],
+    });
+
     const [formMembers, setFormMembers] = useState<FamilyMember[]>([
         {
             id: 'new-1',
-            fullName: '',
+            fullName: 'Juan Dela Cruz',
             relationship: 'Head',
             sex: 'Male',
-            age: 40,
+            age: 42,
+            birthdate: '1984-03-12',
             civilStatus: 'Married (Church)',
+            occupation: 'Carpenter & Small Contractor',
+            employmentType: 'Self-employed / Business Owner',
+            yearsInService: 'More than 10 years',
+            education: 'High School Level / Graduate',
+            maritalSituation: 'Sacramental (Church)',
+            marriageDateParish: '2008-05-10 / San Isidro Parish',
             isBaptized: true,
             isFirstCommunion: true,
             isConfirmed: true,
             isChurchMarried: true,
+            needsSacramentPrep: false,
+            isHomebound: false,
+            isSenior: false,
+            isPwd: false,
+            parishMinistries: ['Facilities Maintenance'],
+            skillsTalents: ['Carpentry & Maintenance'],
         }
     ]);
     const [formMassFreq, setFormMassFreq] = useState<'Every week' | 'Almost every week' | 'Occasionally' | 'Rarely / Never'>('Every week');
@@ -693,6 +922,49 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
     const [formHelp, setFormHelp] = useState('');
     const [formConsent, setFormConsent] = useState(false);
     const [volunteerSuccessMsg, setVolunteerSuccessMsg] = useState('');
+
+    // Form Completeness & Pre-Submission Audit
+    interface FormAuditItem {
+        id: string;
+        label: string;
+        step: number;
+        severity: 'required' | 'recommended';
+        detail?: string;
+    }
+
+    const auditItems: FormAuditItem[] = [];
+    if (!formFamilyName.trim()) {
+        auditItems.push({ id: 'family_name', label: 'Family / Household Name', step: 1, severity: 'required', detail: 'Family surname is required.' });
+    }
+    if (!formHeadName.trim()) {
+        auditItems.push({ id: 'head_name', label: 'Household Head Name', step: 1, severity: 'required', detail: 'Full name of household head.' });
+    }
+    if (!formAddress.trim()) {
+        auditItems.push({ id: 'address', label: 'Complete Street Address', step: 1, severity: 'required', detail: 'House number or street address.' });
+    }
+    if (formMembers.length === 0) {
+        auditItems.push({ id: 'members_count', label: 'Household Members Roster', step: 2, severity: 'required', detail: 'Add at least 1 family member to this survey.' });
+    } else {
+        const missingNameIdx = formMembers.findIndex(m => !m.fullName.trim());
+        if (missingNameIdx !== -1) {
+            auditItems.push({ id: 'member_name', label: `Member #${missingNameIdx + 1} Name`, step: 2, severity: 'required', detail: `Member #${missingNameIdx + 1} is missing a full name.` });
+        }
+    }
+    if (!formConsent) {
+        auditItems.push({ id: 'consent', label: 'Respondent Informed Consent', step: 4, severity: 'required', detail: 'Check consent checkbox before submitting.' });
+    }
+
+    // Recommended checks
+    if (!formContact.trim()) {
+        auditItems.push({ id: 'contact', label: 'Contact Phone Number', step: 1, severity: 'recommended', detail: 'Adding a mobile number aids parish follow-up.' });
+    }
+    if (formNeeds.length === 0 && !formOtherNeed.trim()) {
+        auditItems.push({ id: 'pastoral_needs', label: 'Pastoral Care Needs', step: 3, severity: 'recommended', detail: 'Check if household has sacramental or pastoral needs.' });
+    }
+
+    const requiredIssues = auditItems.filter(i => i.severity === 'required');
+    const recommendedIssues = auditItems.filter(i => i.severity === 'recommended');
+    const isFormReadyToSubmit = requiredIssues.length === 0;
 
     // Dynamic dropdown options from database
     const barangayOptions: ParishOptionItem[] = parishOptions?.barangay ?? [];
@@ -754,32 +1026,64 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
     const [requestPurpose, setRequestPurpose] = useState('School Requirement');
 
     // --- VOLUNTEER ACTIONS ---
-    const addMemberRow = () => {
-        setFormMembers([
-            ...formMembers,
-            {
-                id: `new-${Date.now()}`,
-                fullName: '',
-                relationship: 'Son',
-                sex: 'Male',
-                age: 10,
-                civilStatus: 'Single',
-                isBaptized: false,
-                isFirstCommunion: false,
-                isConfirmed: false,
-                isChurchMarried: false,
-            }
-        ]);
+    const handleOpenAddMember = () => {
+        setEditingMemberIndex(null);
+        setMemberDraft({
+            id: `new-${Date.now()}`,
+            fullName: '',
+            relationship: formMembers.length === 0 ? 'Head' : formMembers.length === 1 ? 'Spouse' : 'Son',
+            sex: 'Male',
+            age: 20,
+            birthdate: '',
+            civilStatus: 'Single',
+            occupation: '',
+            employmentType: 'Permanent (P)',
+            yearsInService: '1–5 years',
+            education: 'High School Level / Graduate',
+            maritalSituation: 'Single',
+            marriageDateParish: '',
+            isBaptized: true,
+            isFirstCommunion: true,
+            isConfirmed: false,
+            isChurchMarried: false,
+            needsSacramentPrep: false,
+            isHomebound: false,
+            specialNeeds: '',
+            isSenior: false,
+            isPwd: false,
+            pwdDetails: '',
+            needsCommunionAnointing: false,
+            needsPastoralVisit: false,
+            isOutOfSchoolYouth: false,
+            youthMinistryInvolvement: false,
+            parishMinistries: [],
+            skillsTalents: [],
+        });
+        setIsMemberModalOpen(true);
     };
 
-    const updateMember = (index: number, field: keyof FamilyMember, value: any) => {
-        const updated = [...formMembers];
-        updated[index] = { ...updated[index], [field]: value };
-        setFormMembers(updated);
+    const handleOpenEditMember = (index: number) => {
+        setEditingMemberIndex(index);
+        setMemberDraft({ ...formMembers[index] });
+        setIsMemberModalOpen(true);
+    };
+
+    const handleSaveMemberDraft = (saved: FamilyMember) => {
+        if (editingMemberIndex !== null) {
+            const updated = [...formMembers];
+            updated[editingMemberIndex] = saved;
+            setFormMembers(updated);
+        } else {
+            setFormMembers([...formMembers, { ...saved, id: `new-${Date.now()}` }]);
+        }
+        setIsMemberModalOpen(false);
     };
 
     const removeMember = (index: number) => {
-        if (formMembers.length === 1) return;
+        if (formMembers.length === 1) {
+            alert('A household profile must contain at least 1 member.');
+            return;
+        }
         setFormMembers(formMembers.filter((_, i) => i !== index));
     };
 
@@ -789,6 +1093,10 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
 
     const toggleSkill = (skill: string) => {
         setFormSkills(prev => prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill]);
+    };
+
+    const toggleTrainingNeed = (topic: string) => {
+        setFormTrainingNeeds(prev => prev.includes(topic) ? prev.filter(t => t !== topic) : [...prev, topic]);
     };
 
     const handleVolunteerSubmit = (e: React.FormEvent) => {
@@ -810,10 +1118,22 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
             sitio_purok: formSitio,
             bec_cluster: formBec,
             contact_number: formContact,
+            housing_situation: formHousing,
+            monthly_income: formIncome,
+            is_vulnerable: formIsVulnerable,
+            livelihood_assistance_needed: formLivelihoodAssistance,
             mass_frequency: formMassFreq,
             bec_participation: formBecPart,
             pastoral_needs: formOtherNeed.trim() ? [...formNeeds, `Other: ${formOtherNeed.trim()}`] : formNeeds,
             volunteer_skills: formSkills,
+            pastoral_followup: {
+                homeVisits: formFollowupHomeVisits,
+                referral: formFollowupReferral,
+                assistanceProvided: formFollowupAssistance,
+                sacramentalFollowup: formFollowupSacrament,
+                nextPastoralAction: formFollowupNextAction,
+            },
+            training_needs: formTrainingNeeds,
             family_joy: formJoy,
             family_concern: formConcern,
             how_parish_can_help: formHelp,
@@ -823,13 +1143,30 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                 relationship: m.relationship,
                 sex: m.sex,
                 age: m.age,
+                birthdate: m.birthdate || null,
                 civil_status: m.civilStatus,
+                occupation: m.occupation || null,
+                employment_type: m.employmentType || null,
+                years_in_service: m.yearsInService || null,
+                education: m.education || null,
+                marital_situation: m.maritalSituation || null,
+                marriage_date_parish: m.marriageDateParish || null,
                 is_baptized: m.isBaptized,
                 is_first_communion: m.isFirstCommunion,
                 is_confirmed: m.isConfirmed,
                 is_church_married: m.isChurchMarried,
+                needs_sacrament_prep: m.needsSacramentPrep ?? false,
                 is_homebound: m.isHomebound ?? false,
                 special_needs: m.specialNeeds ?? '',
+                is_senior: m.isSenior ?? (m.age >= 60),
+                is_pwd: m.isPwd ?? false,
+                pwd_details: m.pwdDetails ?? '',
+                needs_communion_anointing: m.needsCommunionAnointing ?? false,
+                needs_pastoral_visit: m.needsPastoralVisit ?? false,
+                is_out_of_school_youth: m.isOutOfSchoolYouth ?? false,
+                youth_ministry_involvement: m.youthMinistryInvolvement ?? false,
+                parish_ministries: m.parishMinistries ?? [],
+                skills_talents: m.skillsTalents ?? [],
             }))
         }, {
             preserveScroll: true,
@@ -841,12 +1178,24 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                 setFormHeadName('');
                 setFormAddress('');
                 setFormContact('');
+                setFormHousing('Owned');
+                setFormIncome('₱10,001 – ₱15,000');
+                setFormIsVulnerable(false);
+                setFormLivelihoodAssistance('');
                 setFormJoy('');
                 setFormConcern('');
                 setFormHelp('');
                 setFormNeeds([]);
                 setFormOtherNeed('');
                 setFormSkills([]);
+                setFormTrainingNeeds([
+                    'Digital Literacy for Everyday Life (using smartphones, QR codes, government e-services)',
+                    'Building Saving & Emergency Fund',
+                ]);
+                setFormFollowupHomeVisits(false);
+                setFormFollowupReferral('');
+                setFormFollowupAssistance('');
+                setFormFollowupNextAction('');
                 setFormConsent(false);
                 setSurveyStep(1);
             }
@@ -1236,11 +1585,17 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                         </button>
                                         <div className="w-8 h-px bg-slate-200"></div>
                                         <button
+                                            type="button"
                                             onClick={() => setSurveyStep(4)}
                                             className={`flex items-center gap-1.5 ${surveyStep === 4 ? 'text-emerald-700 font-bold' : 'text-slate-500'}`}
                                         >
                                             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${surveyStep === 4 ? 'bg-emerald-700 text-white' : 'bg-slate-200 text-slate-700'}`}>4</span>
-                                            Consent & Submit
+                                            <span>Review & Submit</span>
+                                            {requiredIssues.length > 0 ? (
+                                                <span className="w-2 h-2 rounded-full bg-amber-500" title={`${requiredIssues.length} items to check`} />
+                                            ) : (
+                                                <span className="w-2 h-2 rounded-full bg-emerald-500" title="All required fields ready" />
+                                            )}
                                         </button>
                                     </div>
                                 </div>
@@ -1298,47 +1653,82 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
 
                                                 <div>
                                                     <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                        Town / Municipality
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={formTown}
+                                                        onChange={e => setFormTown(e.target.value)}
+                                                        placeholder="e.g. San Isidro"
+                                                        className="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-emerald-600"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                        Province
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={formProvince}
+                                                        onChange={e => setFormProvince(e.target.value)}
+                                                        placeholder="e.g. Pangasinan"
+                                                        className="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-emerald-600"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-medium text-slate-700 mb-1">
                                                         Barangay
                                                     </label>
-                                                    <select
-                                                        value={formBarangay}
-                                                        onChange={e => setFormBarangay(e.target.value)}
-                                                        className="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg bg-white"
-                                                    >
-                                                        {barangayLabels.map(label => (
-                                                            <option key={label} value={label}>{label}</option>
-                                                        ))}
-                                                    </select>
+                                                    <div className="relative">
+                                                        <select
+                                                            value={formBarangay}
+                                                            onChange={e => setFormBarangay(e.target.value)}
+                                                            className="w-full appearance-none text-sm px-3 pr-8 py-2 border border-slate-300 rounded-lg bg-white focus:outline-emerald-600"
+                                                        >
+                                                            {barangayLabels.map(label => (
+                                                                <option key={label} value={label}>{label}</option>
+                                                            ))}
+                                                        </select>
+                                                        <ChevronDown className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2" />
+                                                    </div>
                                                 </div>
 
                                                 <div>
                                                     <label className="block text-xs font-medium text-slate-700 mb-1">
                                                         Sitio / Purok
                                                     </label>
-                                                    <select
-                                                        value={formSitio}
-                                                        onChange={e => setFormSitio(e.target.value)}
-                                                        className="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg bg-white"
-                                                    >
-                                                        {sitioPurokLabels.map(label => (
-                                                            <option key={label} value={label}>{label}</option>
-                                                        ))}
-                                                    </select>
+                                                    <div className="relative">
+                                                        <select
+                                                            value={formSitio}
+                                                            onChange={e => setFormSitio(e.target.value)}
+                                                            className="w-full appearance-none text-sm px-3 pr-8 py-2 border border-slate-300 rounded-lg bg-white focus:outline-emerald-600"
+                                                        >
+                                                            {sitioPurokLabels.map(label => (
+                                                                <option key={label} value={label}>{label}</option>
+                                                            ))}
+                                                        </select>
+                                                        <ChevronDown className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2" />
+                                                    </div>
                                                 </div>
 
                                                 <div>
                                                     <label className="block text-xs font-medium text-slate-700 mb-1">
-                                                        BEC (Basic Ecclesial Community)
+                                                        BEC (Barangay Ecclesiastical Community)
                                                     </label>
-                                                    <select
-                                                        value={formBec}
-                                                        onChange={e => setFormBec(e.target.value)}
-                                                        className="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg bg-white"
-                                                    >
-                                                        {becClusterLabels.map(label => (
-                                                            <option key={label} value={label}>{label}</option>
-                                                        ))}
-                                                    </select>
+                                                    <div className="relative">
+                                                        <select
+                                                            value={formBec}
+                                                            onChange={e => setFormBec(e.target.value)}
+                                                            className="w-full appearance-none text-sm px-3 pr-8 py-2 border border-slate-300 rounded-lg bg-white focus:outline-emerald-600"
+                                                        >
+                                                            {becClusterLabels.map(label => (
+                                                                <option key={label} value={label}>{label}</option>
+                                                            ))}
+                                                        </select>
+                                                        <ChevronDown className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2" />
+                                                    </div>
                                                 </div>
 
                                                 <div>
@@ -1355,225 +1745,322 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                 </div>
                                             </div>
 
-                                            <div className="flex justify-end pt-4">
+                                            {/* SOCIO-ECONOMIC & HOUSING PROFILE (HOUSEHOLD LEVEL) */}
+                                            <div className="pt-4 border-t border-slate-200 space-y-3.5">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                                                        <Home className="w-3.5 h-3.5 text-emerald-700" />
+                                                        Household Socio-Economic &amp; Housing Situation
+                                                    </span>
+                                                    <span className="text-[11px] text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                                        Household Shared Data
+                                                    </span>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                            Housing Situation
+                                                        </label>
+                                                        <div className="relative">
+                                                            <select
+                                                                value={formHousing}
+                                                                onChange={e => setFormHousing(e.target.value)}
+                                                                className="w-full appearance-none text-xs px-3 pr-8 py-2 border border-slate-300 rounded-lg bg-white focus:outline-emerald-600"
+                                                            >
+                                                                <option value="Owned">Owned (O) — Sariling Bahay at Lupa</option>
+                                                                <option value="Rented">Rented (R) — Upa</option>
+                                                                <option value="Living with extended family">Living with Extended Family (E) — Nakatira sa Kamag-anak</option>
+                                                            </select>
+                                                            <ChevronDown className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="block text-xs font-medium text-slate-700 mb-1">
+                                                            Monthly Household Income
+                                                        </label>
+                                                        <div className="relative">
+                                                            <select
+                                                                value={formIncome}
+                                                                onChange={e => setFormIncome(e.target.value)}
+                                                                className="w-full appearance-none text-xs px-3 pr-8 py-2 border border-slate-300 rounded-lg bg-white focus:outline-emerald-600"
+                                                            >
+                                                                <option value="Below ₱5,000">Below ₱5,000</option>
+                                                                <option value="₱5,001 – ₱10,000">₱5,001 – ₱10,000</option>
+                                                                <option value="₱10,001 – ₱15,000">₱10,001 – ₱15,000</option>
+                                                                <option value="Above ₱15,000">Above ₱15,000</option>
+                                                            </select>
+                                                            <ChevronDown className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="sm:col-span-2 p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                                        <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-800">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={formIsVulnerable}
+                                                                onChange={e => setFormIsVulnerable(e.target.checked)}
+                                                                className="rounded text-emerald-600 focus:ring-emerald-500"
+                                                            />
+                                                            <span>Vulnerable Household with Material / Livelihood Needs</span>
+                                                        </label>
+                                                        {formIsVulnerable && (
+                                                            <input
+                                                                type="text"
+                                                                value={formLivelihoodAssistance}
+                                                                onChange={e => setFormLivelihoodAssistance(e.target.value)}
+                                                                placeholder="Specify livelihood assistance requested (e.g. Sari-sari store capital, fishing gear, rice assistance)"
+                                                                className="w-full text-xs px-3 py-1.5 border border-slate-300 rounded-lg bg-white focus:outline-emerald-600"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setSurveyStep(4)}
+                                                    className="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-emerald-700 rounded-lg hover:bg-slate-100 flex items-center gap-1.5 transition-colors"
+                                                >
+                                                    <ClipboardCheck className="w-4 h-4 text-slate-400" /> Review Form First
+                                                </button>
                                                 <button
                                                     type="button"
                                                     onClick={() => setSurveyStep(2)}
-                                                    className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 flex items-center gap-1.5"
+                                                    className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 flex items-center gap-1.5 shadow-xs"
                                                 >
-                                                    Next: Family Members <ChevronRight className="w-4 h-4" />
+                                                    Next: Family Members Roster <ChevronRight className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </div>
                                     )}
 
-                                    {/* STEP 2: MEMBERS & SACRAMENTS */}
+                                    {/* STEP 2: MEMBERS ROSTER & PROGRESSIVE DISCLOSURE DRAWER */}
                                     {surveyStep === 2 && (
                                         <div className="space-y-4">
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                                                 <div>
-                                                    <h3 className="font-semibold text-slate-900 text-base">Step 2: Household Members & Sacraments</h3>
-                                                    <p className="text-xs text-slate-500">Record each person in the house and their sacramental status.</p>
+                                                    <h3 className="font-semibold text-slate-900 text-base flex items-center gap-2">
+                                                        <span>Step 2: Household Members Roster</span>
+                                                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                                                            {formMembers.length} Person{formMembers.length !== 1 ? 's' : ''}
+                                                        </span>
+                                                    </h3>
+                                                    <p className="text-xs text-slate-500">
+                                                        Click &ldquo;Add Family Member&rdquo; or &ldquo;Edit Profile&rdquo; to complete the detailed questionnaire for each person.
+                                                    </p>
                                                 </div>
                                                 <button
                                                     type="button"
-                                                    onClick={addMemberRow}
-                                                    className="px-3 py-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg flex items-center gap-1"
+                                                    onClick={handleOpenAddMember}
+                                                    className="px-3.5 py-2 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg shadow-xs transition-colors self-start sm:self-auto"
                                                 >
-                                                    <Plus className="w-3.5 h-3.5" /> Add Member
+                                                    Add Family Member
                                                 </button>
                                             </div>
 
-                                            <div className="space-y-4">
+                                            {/* MEMBERS CARDS LIST */}
+                                            <div className="space-y-3">
                                                 {formMembers.map((member, index) => (
-                                                    <div key={member.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-xs font-bold text-slate-700">Member #{index + 1}</span>
+                                                    <div
+                                                        key={member.id}
+                                                        className="p-4 bg-slate-50 hover:bg-white rounded-xl border border-slate-200 transition-all flex flex-col md:flex-row md:items-center justify-between gap-3.5 shadow-2xs"
+                                                    >
+                                                        <div className="flex items-start gap-3.5 flex-1">
+                                                            <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center shrink-0 text-sm border border-emerald-200">
+                                                                {index + 1}
+                                                            </div>
+
+                                                            <div className="space-y-1.5 flex-1">
+                                                                <div className="flex flex-wrap items-center gap-2">
+                                                                    <span className="font-bold text-slate-900 text-sm">
+                                                                        {member.fullName || '(Name not entered)'}
+                                                                    </span>
+                                                                    <span className="px-2 py-0.5 rounded-md bg-slate-200 text-slate-800 text-[11px] font-semibold">
+                                                                        {member.relationship}
+                                                                    </span>
+                                                                    <span className="text-xs text-slate-500">
+                                                                        {member.sex} &bull; {member.age} yrs old &bull; {member.civilStatus}
+                                                                    </span>
+                                                                </div>
+
+                                                                {/* Education & Occupation summary */}
+                                                                <div className="text-xs text-slate-600 flex flex-wrap gap-x-4 gap-y-1">
+                                                                    {member.occupation && (
+                                                                        <span><strong>Work:</strong> {member.occupation} ({member.employmentType || 'Permanent'})</span>
+                                                                    )}
+                                                                    {member.education && (
+                                                                        <span><strong>Education:</strong> {member.education}</span>
+                                                                    )}
+                                                                    {member.marriageDateParish && (
+                                                                        <span><strong>Marriage:</strong> {member.marriageDateParish}</span>
+                                                                    )}
+                                                                </div>
+
+                                                                {/* Sacramental & Care Badges */}
+                                                                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                                                                        member.isBaptized ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-400 border-slate-200'
+                                                                    }`}>
+                                                                        {member.isBaptized ? '✓ Baptized' : '✗ Unbaptized'}
+                                                                    </span>
+                                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                                                                        member.isFirstCommunion ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-400 border-slate-200'
+                                                                    }`}>
+                                                                        {member.isFirstCommunion ? '✓ Communion' : '— No Communion'}
+                                                                    </span>
+                                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                                                                        member.isConfirmed ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-400 border-slate-200'
+                                                                    }`}>
+                                                                        {member.isConfirmed ? '✓ Confirmed' : '— No Confirmation'}
+                                                                    </span>
+                                                                    {member.isChurchMarried && (
+                                                                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                                            ✓ Church Married
+                                                                        </span>
+                                                                    )}
+
+                                                                    {/* Flags */}
+                                                                    {member.needsSacramentPrep && (
+                                                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                                                            ⚠️ Needs Sacraments
+                                                                        </span>
+                                                                    )}
+                                                                    {(member.isSenior || member.age >= 60) && (
+                                                                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                                                                            Senior 60+
+                                                                        </span>
+                                                                    )}
+                                                                    {member.isHomebound && (
+                                                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                                                                            🏠 Homebound
+                                                                        </span>
+                                                                    )}
+                                                                    {member.isPwd && (
+                                                                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                                                            ♿ PWD
+                                                                        </span>
+                                                                    )}
+                                                                    {member.needsCommunionAnointing && (
+                                                                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                                                                            🕊️ Viaticum Call
+                                                                        </span>
+                                                                    )}
+                                                                    {member.isOutOfSchoolYouth && (
+                                                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                                                                            OSY Youth
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Actions */}
+                                                        <div className="flex items-center gap-2 self-end md:self-center shrink-0">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleOpenEditMember(index)}
+                                                                className="px-3 py-1.5 text-xs font-semibold bg-white border border-slate-300 hover:border-emerald-600 hover:text-emerald-700 text-slate-700 rounded-lg flex items-center gap-1.5 transition-colors"
+                                                            >
+                                                                <Pencil className="w-3.5 h-3.5" /> Edit Profile
+                                                            </button>
+
                                                             {formMembers.length > 1 && (
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => removeMember(index)}
-                                                                    className="text-rose-600 hover:text-rose-800 text-xs flex items-center gap-1"
+                                                                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors"
+                                                                    title="Remove member"
                                                                 >
-                                                                    <Trash2 className="w-3.5 h-3.5" /> Remove
+                                                                    <Trash2 className="w-4 h-4" />
                                                                 </button>
-                                                            )}
-                                                        </div>
-
-                                                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                                                            <div className="sm:col-span-2">
-                                                                <label className="block text-[11px] font-medium text-slate-600 mb-1">Full Name</label>
-                                                                <input
-                                                                    type="text"
-                                                                    value={member.fullName}
-                                                                    onChange={e => updateMember(index, 'fullName', e.target.value)}
-                                                                    placeholder="First Name, M.I., Last Name"
-                                                                    className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg"
-                                                                    required
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <label className="block text-[11px] font-medium text-slate-600 mb-1">Relationship</label>
-                                                                <select
-                                                                    value={member.relationship}
-                                                                    onChange={e => updateMember(index, 'relationship', e.target.value)}
-                                                                    className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg"
-                                                                >
-                                                                    <option value="Head">Head</option>
-                                                                    <option value="Spouse">Spouse</option>
-                                                                    <option value="Son">Son</option>
-                                                                    <option value="Daughter">Daughter</option>
-                                                                    <option value="Parent">Parent / Grandparent</option>
-                                                                    <option value="Relative">Relative</option>
-                                                                    <option value="Other">Other</option>
-                                                                </select>
-                                                            </div>
-                                                            <div>
-                                                                <label className="block text-[11px] font-medium text-slate-600 mb-1">Age</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={member.age}
-                                                                    onChange={e => updateMember(index, 'age', parseInt(e.target.value) || 0)}
-                                                                    className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg"
-                                                                />
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Sacraments Checklist */}
-                                                        <div>
-                                                            <label className="block text-[11px] font-medium text-slate-600 mb-1.5">Sacraments Received:</label>
-                                                            <div className="flex flex-wrap gap-4 text-xs">
-                                                                <label className="flex items-center gap-1.5 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={member.isBaptized}
-                                                                        onChange={e => updateMember(index, 'isBaptized', e.target.checked)}
-                                                                        className="rounded text-emerald-600 focus:ring-emerald-500"
-                                                                    />
-                                                                    <span>Baptized</span>
-                                                                </label>
-                                                                <label className="flex items-center gap-1.5 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={member.isFirstCommunion}
-                                                                        onChange={e => updateMember(index, 'isFirstCommunion', e.target.checked)}
-                                                                        className="rounded text-emerald-600 focus:ring-emerald-500"
-                                                                    />
-                                                                    <span>First Communion</span>
-                                                                </label>
-                                                                <label className="flex items-center gap-1.5 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={member.isConfirmed}
-                                                                        onChange={e => updateMember(index, 'isConfirmed', e.target.checked)}
-                                                                        className="rounded text-emerald-600 focus:ring-emerald-500"
-                                                                    />
-                                                                    <span>Confirmed</span>
-                                                                </label>
-                                                                <label className="flex items-center gap-1.5 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={member.isChurchMarried}
-                                                                        onChange={e => updateMember(index, 'isChurchMarried', e.target.checked)}
-                                                                        className="rounded text-emerald-600 focus:ring-emerald-500"
-                                                                    />
-                                                                    <span>Church Wedding</span>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Homebound / Sick flag */}
-                                                        <div className="pt-1 border-t border-slate-100">
-                                                            <label className="flex items-start gap-2 cursor-pointer text-xs">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={member.isHomebound ?? false}
-                                                                    onChange={e => updateMember(index, 'isHomebound', e.target.checked)}
-                                                                    className="mt-0.5 rounded text-rose-600 focus:ring-rose-500"
-                                                                />
-                                                                <span className="text-slate-700">
-                                                                    <strong>This person is sick or cannot go to church</strong>
-                                                                    <span className="text-slate-400 ml-1">(bedridden, elderly, needs home communion / sick call)</span>
-                                                                </span>
-                                                            </label>
-                                                            {member.isHomebound && (
-                                                                <input
-                                                                    type="text"
-                                                                    value={member.specialNeeds ?? ''}
-                                                                    onChange={e => updateMember(index, 'specialNeeds', e.target.value)}
-                                                                    placeholder="Briefly describe situation (e.g. bedridden stroke patient, blind elderly)"
-                                                                    className="mt-2 w-full text-xs px-2.5 py-1.5 bg-white border border-rose-300 rounded-lg focus:outline-rose-500"
-                                                                />
                                                             )}
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
 
-                                            <div className="flex justify-between pt-4">
+                                            <div className="flex justify-between items-center pt-4 border-t border-slate-100">
                                                 <button
                                                     type="button"
                                                     onClick={() => setSurveyStep(1)}
                                                     className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 flex items-center gap-1"
                                                 >
-                                                    <ChevronLeft className="w-4 h-4" /> Back
+                                                    <ChevronLeft className="w-4 h-4" /> Back to Household
                                                 </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setSurveyStep(3)}
-                                                    className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 flex items-center gap-1"
-                                                >
-                                                    Next: Needs & Gifts <ChevronRight className="w-4 h-4" />
-                                                </button>
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSurveyStep(4)}
+                                                        className="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-emerald-700 rounded-lg hover:bg-slate-100 flex items-center gap-1.5 transition-colors"
+                                                    >
+                                                        <ClipboardCheck className="w-4 h-4 text-slate-400" /> Review Form
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSurveyStep(3)}
+                                                        className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 flex items-center gap-1 shadow-xs"
+                                                    >
+                                                        Next: Pastoral Needs & Gifts <ChevronRight className="w-4 h-4" />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
 
-                                    {/* STEP 3: PASTORAL NEEDS & STEWARDSHIP GIFTS */}
+                                    {/* STEP 3: PASTORAL NEEDS, EXTENSION TRAINING & STEWARDSHIP */}
                                     {surveyStep === 3 && (
-                                        <div className="space-y-5 max-w-2xl mx-auto">
+                                        <div className="space-y-6 max-w-2xl mx-auto">
                                             <div className="border-b border-slate-100 pb-2">
-                                                <h3 className="font-semibold text-slate-900 text-base">Step 3: Pastoral Care & Stewardship</h3>
-                                                <p className="text-xs text-slate-500">Record what support this family needs, and what talents they can share.</p>
+                                                <h3 className="font-semibold text-slate-900 text-base">Step 3: Pastoral Care, Community Training & Follow-up</h3>
+                                                <p className="text-xs text-slate-500">Record religious participation, university extension training interests, and parish follow-up actions.</p>
                                             </div>
 
                                             {/* Mass & BEC */}
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="block text-xs font-medium text-slate-700 mb-1">Sunday Mass Attendance</label>
-                                                    <select
-                                                        value={formMassFreq}
-                                                        onChange={e => setFormMassFreq(e.target.value as any)}
-                                                        className="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg"
-                                                    >
-                                                        <option value="Every week">Every week</option>
-                                                        <option value="Almost every week">Almost every week</option>
-                                                        <option value="Occasionally">Occasionally</option>
-                                                        <option value="Rarely / Never">Rarely / Never</option>
-                                                    </select>
+                                                    <div className="relative">
+                                                        <select
+                                                            value={formMassFreq}
+                                                            onChange={e => setFormMassFreq(e.target.value as any)}
+                                                            className="w-full text-xs pl-3 pr-8 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer"
+                                                        >
+                                                            <option value="Every week">Every week</option>
+                                                            <option value="Almost every week">Almost every week</option>
+                                                            <option value="Occasionally">Occasionally</option>
+                                                            <option value="Rarely / Never">Rarely / Never</option>
+                                                        </select>
+                                                        <ChevronDown className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2" />
+                                                    </div>
                                                 </div>
 
                                                 <div>
                                                     <label className="block text-xs font-medium text-slate-700 mb-1">BEC Gathering Participation</label>
-                                                    <select
-                                                        value={formBecPart}
-                                                        onChange={e => setFormBecPart(e.target.value as any)}
-                                                        className="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg"
-                                                    >
-                                                        <option value="Regular">Regular</option>
-                                                        <option value="Sometimes">Sometimes</option>
-                                                        <option value="Rarely">Rarely</option>
-                                                        <option value="Not active">Not active</option>
-                                                    </select>
+                                                    <div className="relative">
+                                                        <select
+                                                            value={formBecPart}
+                                                            onChange={e => setFormBecPart(e.target.value as any)}
+                                                            className="w-full text-xs pl-3 pr-8 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer"
+                                                        >
+                                                            <option value="Regular">Regular</option>
+                                                            <option value="Sometimes">Sometimes</option>
+                                                            <option value="Rarely">Rarely</option>
+                                                            <option value="Not active">Not active</option>
+                                                        </select>
+                                                        <ChevronDown className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2" />
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             {/* Pastoral Needs Checklist */}
-                                            <div>
-                                                <label className="block text-xs font-medium text-slate-700 mb-2">
+                                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider">
                                                     Pastoral Needs Requested by Household:
                                                 </label>
-                                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                                                     {[
                                                         'Sacramental preparation for children',
                                                         'Home communion for elderly / sick',
@@ -1582,7 +2069,7 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                         'Livelihood / educational help',
                                                         'Pastoral home visit by Parish team'
                                                     ].map(need => (
-                                                        <label key={need} className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer">
+                                                        <label key={need} className="flex items-center gap-2 p-2 rounded-lg bg-white border border-slate-200 hover:border-emerald-300 cursor-pointer transition-colors">
                                                             <input
                                                                 type="checkbox"
                                                                 checked={formNeeds.includes(need)}
@@ -1595,25 +2082,149 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                 </div>
 
                                                 {/* Other / custom need */}
-                                                <div className="mt-2">
-                                                    <label className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer text-xs">
+                                                <div className="pt-1">
+                                                    <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
                                                         <input
                                                             type="checkbox"
                                                             checked={formOtherNeed.length > 0}
                                                             onChange={e => { if (!e.target.checked) setFormOtherNeed(''); }}
                                                             className="rounded text-emerald-600 focus:ring-emerald-500"
                                                         />
-                                                        <span className="text-slate-800 font-medium">Other need not listed above</span>
+                                                        <span className="text-slate-800 font-medium">Other specific pastoral need</span>
                                                     </label>
                                                     {formOtherNeed !== undefined && (
                                                         <input
                                                             type="text"
                                                             value={formOtherNeed}
                                                             onChange={e => setFormOtherNeed(e.target.value)}
-                                                            placeholder="Please describe the specific need..."
-                                                            className="mt-1.5 w-full text-xs px-3 py-1.5 border border-slate-300 rounded-lg focus:outline-emerald-500"
+                                                            placeholder="Please describe the specific pastoral need..."
+                                                            className="mt-1.5 w-full text-xs px-3 py-1.5 border border-slate-300 rounded-lg focus:outline-emerald-500 bg-white"
                                                         />
                                                     )}
+                                                </div>
+                                            </div>
+
+                                            {/* Community Training Needs */}
+                                            <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-200 space-y-3">
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-100 pb-2">
+                                                    <div>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <GraduationCap className="w-4 h-4 text-emerald-700" />
+                                                            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                                                                Community Training Needs
+                                                            </h4>
+                                                        </div>
+                                                        <p className="text-[11px] text-slate-600 mt-0.5">
+                                                            Select skills and extension training workshops this household is interested in attending.
+                                                        </p>
+                                                    </div>
+                                                    <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full self-start sm:self-auto">
+                                                        {formTrainingNeeds.length} Selected
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex flex-wrap gap-2 pt-1">
+                                                    {UNIVERSITY_TRAINING_TOPICS.map(topic => {
+                                                        const isSelected = formTrainingNeeds.includes(topic);
+                                                        return (
+                                                            <button
+                                                                key={topic}
+                                                                type="button"
+                                                                onClick={() => toggleTrainingNeed(topic)}
+                                                                className={`px-3 py-1.5 rounded-lg text-xs font-medium text-left transition-all flex items-center gap-1.5 border ${
+                                                                    isSelected
+                                                                        ? 'bg-emerald-700 text-white border-emerald-700 shadow-2xs'
+                                                                        : 'bg-white text-slate-700 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40'
+                                                                }`}
+                                                            >
+                                                                <span className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 text-[10px] ${
+                                                                    isSelected ? 'bg-emerald-800 text-white' : 'border border-slate-300'
+                                                                }`}>
+                                                                    {isSelected ? '✓' : ''}
+                                                                </span>
+                                                                <span>{topic}</span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+
+                                            {/* Pastoral Follow-up & Accompanying Action */}
+                                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                                                <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2">
+                                                    <HeartHandshake className="w-4 h-4 text-purple-700" />
+                                                    <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                                                        Pastoral Follow-Up & Accompanying Action
+                                                    </h4>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                    <label className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={formFollowupHomeVisits}
+                                                            onChange={e => setFormFollowupHomeVisits(e.target.checked)}
+                                                            className="rounded text-purple-600 focus:ring-purple-500"
+                                                        />
+                                                        <div>
+                                                            <span className="text-xs font-semibold text-slate-900 block">Home Visit Recommended</span>
+                                                            <span className="text-[11px] text-slate-500">Requires pastoral or BEC leader visit</span>
+                                                        </div>
+                                                    </label>
+
+                                                    <label className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={formFollowupSacrament}
+                                                            onChange={e => setFormFollowupSacrament(e.target.checked)}
+                                                            className="rounded text-purple-600 focus:ring-purple-500"
+                                                        />
+                                                        <div>
+                                                            <span className="text-xs font-semibold text-slate-900 block">Sacramental Follow-up</span>
+                                                            <span className="text-[11px] text-slate-500">Kasalang Bayan, Baptism, etc.</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                                    <div>
+                                                        <label className="block text-[11px] font-medium text-slate-700 mb-1">
+                                                            Referral to Partner Organization
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            value={formFollowupReferral}
+                                                            onChange={e => setFormFollowupReferral(e.target.value)}
+                                                            placeholder="e.g. Caritas, Barangay Health, DSWD, Social Action"
+                                                            className="w-full text-xs px-3 py-1.5 bg-white border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="block text-[11px] font-medium text-slate-700 mb-1">
+                                                            Assistance Provided / Proposed
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            value={formFollowupAssistance}
+                                                            onChange={e => setFormFollowupAssistance(e.target.value)}
+                                                            placeholder="e.g. Relief pack, medical referral, counseling"
+                                                            className="w-full text-xs px-3 py-1.5 bg-white border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-[11px] font-medium text-slate-700 mb-1">
+                                                        Next Pastoral Action & Target Date
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={formFollowupNextAction}
+                                                        onChange={e => setFormFollowupNextAction(e.target.value)}
+                                                        placeholder="e.g. Follow-up visit by BEC St. Jude team on November 15"
+                                                        className="w-full text-xs px-3 py-1.5 bg-white border border-slate-300 rounded-lg"
+                                                    />
                                                 </div>
                                             </div>
 
@@ -1692,64 +2303,354 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                     onClick={() => setSurveyStep(2)}
                                                     className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 flex items-center gap-1"
                                                 >
-                                                    <ChevronLeft className="w-4 h-4" /> Back
+                                                    <ChevronLeft className="w-4 h-4" /> Back to Members
                                                 </button>
                                                 <button
                                                     type="button"
                                                     onClick={() => setSurveyStep(4)}
-                                                    className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 flex items-center gap-1"
+                                                    className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 flex items-center gap-1 shadow-xs"
                                                 >
-                                                    Next: Consent & Submit <ChevronRight className="w-4 h-4" />
+                                                    Next: Review & Submit <ChevronRight className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </div>
                                     )}
 
-                                    {/* STEP 4: CONSENT & SUBMIT */}
+                                    {/* STEP 4: FORM REVIEW & FINAL SUBMISSION */}
                                     {surveyStep === 4 && (
-                                        <div className="space-y-5 max-w-xl mx-auto">
-                                            <div className="border-b border-slate-100 pb-2">
-                                                <h3 className="font-semibold text-slate-900 text-base">Step 4: Consent & Final Submission</h3>
-                                                <p className="text-xs text-slate-500">Confirm respondent consent before submitting to the Pastor.</p>
+                                        <div className="space-y-5 max-w-2xl mx-auto">
+                                            <div className="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                                <div>
+                                                    <h3 className="font-semibold text-slate-900 text-base">Step 4: Form Review & Final Submission</h3>
+                                                    <p className="text-xs text-slate-500">
+                                                        Review all recorded questionnaire information and check completeness before sending to Pastor.
+                                                    </p>
+                                                </div>
+                                                <div className="self-start sm:self-auto">
+                                                    {isFormReadyToSubmit ? (
+                                                        <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold flex items-center gap-1.5">
+                                                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Form Complete & Ready
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold flex items-center gap-1.5">
+                                                            <AlertCircle className="w-3.5 h-3.5 text-amber-600" /> {requiredIssues.length} Missing Field{requiredIssues.length !== 1 ? 's' : ''}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
 
-                                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2 text-slate-700">
-                                                <div className="font-semibold text-slate-900">Summary of Entry:</div>
-                                                <p>• <strong>Family:</strong> {formFamilyName || 'Not entered yet'}</p>
-                                                <p>• <strong>Address:</strong> {formAddress}, {formSitio}, {formBarangay}</p>
-                                                <p>• <strong>Members:</strong> {formMembers.length} recorded</p>
-                                                <p>• <strong>Needs:</strong> {formNeeds.length > 0 ? formNeeds.join(', ') : 'None marked'}</p>
-                                                <p>• <strong>Talents Offered:</strong> {formSkills.length > 0 ? formSkills.join(', ') : 'None marked'}</p>
+                                            {/* AUDIT / COMPLETENESS CHECKLIST BANNER */}
+                                            {!isFormReadyToSubmit ? (
+                                                <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 space-y-2.5">
+                                                    <div className="flex items-start gap-2.5">
+                                                        <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                                                        <div>
+                                                            <h4 className="text-xs font-bold text-amber-900">
+                                                                Attention: Required Fields Need Completion ({requiredIssues.length})
+                                                            </h4>
+                                                            <p className="text-[11px] text-amber-700">
+                                                                Some fields may have been missed. Click any item below to jump straight to that section to complete it:
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-2 pt-1">
+                                                        {requiredIssues.map(issue => (
+                                                            <button
+                                                                key={issue.id}
+                                                                type="button"
+                                                                onClick={() => setSurveyStep(issue.step)}
+                                                                className="px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-amber-900 text-xs font-medium hover:bg-amber-100/80 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                                                            >
+                                                                <span className="w-4 h-4 rounded-full bg-amber-200 text-amber-800 text-[10px] font-bold flex items-center justify-center">
+                                                                    {issue.step}
+                                                                </span>
+                                                                <span>{issue.label}</span>
+                                                                <ChevronRight className="w-3 h-3 text-amber-600" />
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ) : recommendedIssues.length > 0 ? (
+                                                <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                                                    <div className="flex items-center gap-2 text-emerald-900 font-medium">
+                                                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                                                        <span>All essential fields are completed. You can safely submit now!</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        {recommendedIssues.map(issue => (
+                                                            <button
+                                                                key={issue.id}
+                                                                type="button"
+                                                                onClick={() => setSurveyStep(issue.step)}
+                                                                className="px-2 py-0.5 text-[11px] bg-white border border-emerald-300 rounded text-emerald-800 hover:bg-emerald-100 cursor-pointer"
+                                                            >
+                                                                + Add {issue.label}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center gap-2 text-xs text-emerald-900 font-medium">
+                                                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                                                    <span>Excellent! All required and recommended fields are thoroughly filled.</span>
+                                                </div>
+                                            )}
+
+                                            {/* SECTION REVIEW CARDS */}
+                                            <div className="space-y-3.5">
+                                                {/* 1. Step 1 Review Card */}
+                                                <div className="p-4 bg-slate-50 hover:bg-white rounded-xl border border-slate-200 space-y-3 transition-colors">
+                                                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center justify-center">1</span>
+                                                            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Household Profile & Housing</h4>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSurveyStep(1)}
+                                                            className="text-xs text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1 hover:underline cursor-pointer"
+                                                        >
+                                                            <Pencil className="w-3 h-3" /> Edit Step 1
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                                                        <div>
+                                                            <span className="text-slate-400 block text-[11px]">Family Name</span>
+                                                            <span className="font-semibold text-slate-900">{formFamilyName || <span className="text-amber-600 italic">Missing surname</span>}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-slate-400 block text-[11px]">Household Head</span>
+                                                            <span className="font-semibold text-slate-900">{formHeadName || <span className="text-amber-600 italic">Missing head name</span>}</span>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <span className="text-slate-400 block text-[11px]">Address & BEC Cluster</span>
+                                                            <span>{formAddress || <span className="text-amber-600 italic">Missing address</span>}, {formSitio}, {formBarangay} &bull; <strong>{formBec}</strong></span>
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-slate-400 block text-[11px]">Housing & Monthly Income</span>
+                                                            <span>{formHousing} &bull; ₱ {formIncome}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-slate-400 block text-[11px]">Contact Number</span>
+                                                            <span>{formContact || <span className="text-slate-400 italic">None provided</span>}</span>
+                                                        </div>
+                                                        {formIsVulnerable && (
+                                                            <div className="sm:col-span-2 p-2 rounded-lg bg-red-50 border border-red-200 text-red-900 text-xs flex items-center gap-2">
+                                                                <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                                                                <span><strong>Priority Assistance:</strong> {formLivelihoodAssistance || 'Needs livelihood / financial assistance'}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* 2. Step 2 Review Card */}
+                                                <div className="p-4 bg-slate-50 hover:bg-white rounded-xl border border-slate-200 space-y-3 transition-colors">
+                                                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center justify-center">2</span>
+                                                            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
+                                                                Household Members Roster ({formMembers.length})
+                                                            </h4>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSurveyStep(2)}
+                                                            className="text-xs text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1 hover:underline cursor-pointer"
+                                                        >
+                                                            <Pencil className="w-3 h-3" /> Edit Step 2 / Add Member
+                                                        </button>
+                                                    </div>
+
+                                                    {formMembers.length === 0 ? (
+                                                        <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center justify-between">
+                                                            <span>No family members added yet. Please add at least 1 member.</span>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setSurveyStep(2)}
+                                                                className="px-2.5 py-1 bg-amber-700 text-white rounded text-xs font-semibold"
+                                                            >
+                                                                Go to Step 2
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="space-y-2">
+                                                            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600 pb-1">
+                                                                <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                                                    {formMembers.filter(m => m.isBaptized).length} Baptized
+                                                                </span>
+                                                                <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                                                    {formMembers.filter(m => m.isFirstCommunion).length} 1st Communion
+                                                                </span>
+                                                                <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                                                    {formMembers.filter(m => m.isConfirmed).length} Confirmed
+                                                                </span>
+                                                                <span className="px-2 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200">
+                                                                    {formMembers.filter(m => m.isChurchMarried).length} Church Married
+                                                                </span>
+                                                                {formMembers.filter(m => m.isSenior || m.age >= 60).length > 0 && (
+                                                                    <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                                                                        {formMembers.filter(m => m.isSenior || m.age >= 60).length} Senior
+                                                                    </span>
+                                                                )}
+                                                                {formMembers.filter(m => m.isPwd).length > 0 && (
+                                                                    <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
+                                                                        {formMembers.filter(m => m.isPwd).length} PWD
+                                                                    </span>
+                                                                )}
+                                                            </div>
+
+                                                            <div className="divide-y divide-slate-200 max-h-44 overflow-y-auto">
+                                                                {formMembers.map((m, idx) => (
+                                                                    <div key={idx} className="py-2 flex items-center justify-between text-xs">
+                                                                        <div>
+                                                                            <span className="font-semibold text-slate-900">{m.fullName || <span className="text-amber-600 italic">Missing Member Name</span>}</span>
+                                                                            <span className="text-slate-500 text-[11px]"> &bull; {m.relationship}, {m.age}y &bull; {m.civilStatus}</span>
+                                                                            <p className="text-[10px] text-slate-400">
+                                                                                {m.occupation ? `Work: ${m.occupation}` : m.education ? `Educ: ${m.education}` : 'No occupation details'}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-1 text-[10px]">
+                                                                            <span className={`px-1.5 py-0.5 rounded ${m.isBaptized ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-slate-200 text-slate-400'}`} title="Baptism">B</span>
+                                                                            <span className={`px-1.5 py-0.5 rounded ${m.isFirstCommunion ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-slate-200 text-slate-400'}`} title="First Communion">C</span>
+                                                                            <span className={`px-1.5 py-0.5 rounded ${m.isConfirmed ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-slate-200 text-slate-400'}`} title="Confirmation">K</span>
+                                                                            <span className={`px-1.5 py-0.5 rounded ${m.isChurchMarried ? 'bg-purple-100 text-purple-800 font-bold' : 'bg-slate-200 text-slate-400'}`} title="Church Marriage">M</span>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* 3. Step 3 Review Card */}
+                                                <div className="p-4 bg-slate-50 hover:bg-white rounded-xl border border-slate-200 space-y-3 transition-colors">
+                                                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center justify-center">3</span>
+                                                            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Pastoral Needs & Training</h4>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSurveyStep(3)}
+                                                            className="text-xs text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1 hover:underline cursor-pointer"
+                                                        >
+                                                            <Pencil className="w-3 h-3" /> Edit Step 3
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="space-y-2 text-xs text-slate-700">
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                            <p>• <strong>Sunday Mass:</strong> {formMassFreq}</p>
+                                                            <p>• <strong>BEC Participation:</strong> {formBecPart}</p>
+                                                        </div>
+
+                                                        <div>
+                                                            <strong className="block text-slate-900 text-[11px] mb-1">Community Training Needs:</strong>
+                                                            {formTrainingNeeds.length > 0 ? (
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {formTrainingNeeds.map(topic => (
+                                                                        <span key={topic} className="px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded text-[10px] font-medium">
+                                                                            🎓 {topic}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            ) : (
+                                                                <span className="text-slate-400 italic text-[11px]">No training topics selected</span>
+                                                            )}
+                                                        </div>
+
+                                                        <div>
+                                                            <strong className="block text-slate-900 text-[11px] mb-1">Pastoral Needs Requested:</strong>
+                                                            {formNeeds.length > 0 || formOtherNeed.trim() ? (
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {formNeeds.map(need => (
+                                                                        <span key={need} className="px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 rounded text-[10px]">
+                                                                            {need}
+                                                                        </span>
+                                                                    ))}
+                                                                    {formOtherNeed.trim() && (
+                                                                        <span className="px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 rounded text-[10px]">
+                                                                            Other: {formOtherNeed.trim()}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                <span className="text-slate-400 italic text-[11px]">None requested</span>
+                                                            )}
+                                                        </div>
+
+                                                        {formSkills.length > 0 && (
+                                                            <div>
+                                                                <strong className="block text-slate-900 text-[11px] mb-1">Talents & Ministries Offered:</strong>
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {formSkills.map(skill => (
+                                                                        <span key={skill} className="px-2 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded text-[10px]">
+                                                                            {skill}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <label className="flex items-start gap-3 p-3 bg-emerald-50/60 border border-emerald-200 rounded-xl cursor-pointer">
+                                            {/* CONSENT CONFIRMATION */}
+                                            <label className={`flex items-start gap-3 p-3.5 rounded-xl cursor-pointer transition-all border ${
+                                                !formConsent
+                                                    ? 'bg-amber-50/70 border-amber-300'
+                                                    : 'bg-emerald-50/70 border-emerald-300'
+                                            }`}>
                                                 <input
                                                     type="checkbox"
                                                     checked={formConsent}
                                                     onChange={e => setFormConsent(e.target.checked)}
-                                                    className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500"
+                                                    className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer"
                                                     required
                                                 />
                                                 <div className="text-xs text-slate-700">
-                                                    <span className="font-semibold text-slate-900 block">Informed Consent Obtained</span>
-                                                    The respondent has consented to share this household information for pastoral accompaniment, sacramental verification, and parish records.
+                                                    <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                                                        <span>Informed Consent Obtained</span>
+                                                        {!formConsent && <span className="text-[10px] text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded font-semibold">Required to Submit</span>}
+                                                    </span>
+                                                    The respondent has willingly consented to share this household information for pastoral accompaniment, sacramental verification, and church registry purposes.
                                                 </div>
                                             </label>
 
-                                            <div className="flex justify-between pt-4">
+                                            {/* NAVIGATION / SUBMISSION CONTROLS */}
+                                            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
                                                 <button
                                                     type="button"
                                                     onClick={() => setSurveyStep(3)}
-                                                    className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 flex items-center gap-1"
+                                                    className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 flex items-center gap-1 w-full sm:w-auto justify-center cursor-pointer"
                                                 >
-                                                    <ChevronLeft className="w-4 h-4" /> Back
+                                                    <ChevronLeft className="w-4 h-4" /> Back to Step 3
                                                 </button>
-                                                <button
-                                                    type="submit"
-                                                    className="px-5 py-2.5 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800 flex items-center gap-2 shadow-xs"
-                                                >
-                                                    <Send className="w-4 h-4" /> Submit for Pastor Review
-                                                </button>
+
+                                                <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                                                    {!isFormReadyToSubmit && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSurveyStep(requiredIssues[0].step)}
+                                                            className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors w-full sm:w-auto cursor-pointer"
+                                                        >
+                                                            <AlertCircle className="w-4 h-4" /> Jump to Missing: {requiredIssues[0].label}
+                                                        </button>
+                                                    )}
+
+                                                    <button
+                                                        type="submit"
+                                                        disabled={!isFormReadyToSubmit}
+                                                        className={`px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors w-full sm:w-auto ${
+                                                            isFormReadyToSubmit
+                                                                ? 'bg-emerald-700 text-white hover:bg-emerald-800 cursor-pointer'
+                                                                : 'bg-slate-300 text-slate-500 cursor-not-allowed opacity-80'
+                                                        }`}
+                                                    >
+                                                        <Send className="w-4 h-4" /> Submit for Pastor Review
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
@@ -1780,6 +2681,7 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                     { label: 'Total Parishioners', value: households.reduce((acc, h) => acc + h.members.length, 0) },
                                     { label: 'Pending Surveys',    value: pendingHouseholdCount },
                                     { label: 'Pending Certs',      value: pendingCertCount },
+                                    { label: 'Care Priority Families', value: households.filter(h => h.isVulnerable || h.members.some(m => (m.specialNeeds && m.specialNeeds.length > 0) || m.age >= 60)).length },
                                 ].map(stat => (
                                     <div key={stat.label} className="text-center px-3 py-1.5 bg-green-800 rounded-lg border border-green-700">
                                         <span className="text-[10px] text-green-300 block">{stat.label}</span>
@@ -1857,13 +2759,35 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                     <p className="text-xs text-stone-600">
                                                         <strong>Head:</strong> {h.headName} &nbsp;•&nbsp; <strong>Address:</strong> {h.address}, {h.sitioPurok} &nbsp;•&nbsp; <strong>BEC:</strong> {h.becCluster}
                                                     </p>
+                                                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                                                        {h.housingSituation && (
+                                                            <span className="text-[11px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded border border-stone-200">
+                                                                🏠 {h.housingSituation}
+                                                            </span>
+                                                        )}
+                                                        {h.monthlyIncome && (
+                                                            <span className="text-[11px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded border border-stone-200">
+                                                                ₱ {h.monthlyIncome}
+                                                            </span>
+                                                        )}
+                                                        {h.isVulnerable && (
+                                                            <span className="text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded">
+                                                                ⚠️ Priority Assistance
+                                                            </span>
+                                                        )}
+                                                        {h.trainingNeeds && h.trainingNeeds.length > 0 && (
+                                                            <span className="text-[11px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded">
+                                                                🎓 Training: {h.trainingNeeds[0]} {h.trainingNeeds.length > 1 ? `+${h.trainingNeeds.length - 1}` : ''}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                     <p className="text-xs text-stone-400">
-                                                        Encoded by {h.encodedBy} on {h.dateEncoded} &nbsp;•&nbsp; {h.members.length} members
+                                                        Encoded by {h.encodedBy} on {h.dateEncoded} &nbsp;•&nbsp; {h.members.length} member{h.members.length !== 1 ? 's' : ''}
                                                     </p>
                                                     {h.pastoralNeeds.length > 0 && (
                                                         <div className="flex flex-wrap gap-1.5 pt-0.5">
                                                             {h.pastoralNeeds.map(need => (
-                                                                <span key={need} className="text-[10px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded border border-stone-200">
+                                                                <span key={need} className="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded border border-amber-200">
                                                                     {need}
                                                                 </span>
                                                             ))}
@@ -1998,9 +2922,31 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                                         </span>
                                                     </div>
                                                     <p className="text-xs text-stone-500 mt-0.5">
-                                                        {h.address}, {h.sitioPurok} &nbsp;•&nbsp; <strong>BEC:</strong> {h.becCluster}
+                                                        {h.address}, {h.sitioPurok} &nbsp;•&nbsp; <strong>BEC:</strong> {h.becCluster} &nbsp;•&nbsp; {h.members.length} members
                                                     </p>
-                                                    <p className="text-xs text-stone-400 mt-0.5">
+                                                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                                                        {h.housingSituation && (
+                                                            <span className="text-[11px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded border border-stone-200">
+                                                                🏠 {h.housingSituation}
+                                                            </span>
+                                                        )}
+                                                        {h.monthlyIncome && (
+                                                            <span className="text-[11px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded border border-stone-200">
+                                                                ₱ {h.monthlyIncome}
+                                                            </span>
+                                                        )}
+                                                        {h.isVulnerable && (
+                                                            <span className="text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded">
+                                                                ⚠️ Priority Assistance
+                                                            </span>
+                                                        )}
+                                                        {h.trainingNeeds && h.trainingNeeds.length > 0 && (
+                                                            <span className="text-[11px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded">
+                                                                🎓 Training: {h.trainingNeeds[0]} {h.trainingNeeds.length > 1 ? `+${h.trainingNeeds.length - 1}` : ''}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs text-stone-400 mt-1">
                                                         {h.members.map(m => m.fullName).join(', ')}
                                                     </p>
                                                 </div>
@@ -2150,330 +3096,577 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                 {/* ========================================================================= */}
                 {/* 3. PARISHIONER / MEMBER VIEW                                              */}
                 {/* ========================================================================= */}
-                {currentRole === 'member' && (
-                    <div className="space-y-6 max-w-4xl mx-auto">
-                        {/* Member Identity Card */}
-                        <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-5">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                                <div>
-                                    <span className="text-xs font-medium text-slate-400">Parishioner Self-Service</span>
-                                    <h2 className="text-xl font-bold text-slate-900 mt-0.5">Santos Family</h2>
-                                    <p className="text-xs text-slate-500">
-                                        Household ID: <strong>FAM-2026-0042</strong> • Barangay San Isidro, Purok 3 • BEC St. Jude
-                                    </p>
+                {/* ========================================================================= */}
+                {/* 3. PARISHIONER / MEMBER VIEW                                              */}
+                {/* ========================================================================= */}
+                {currentRole === 'member' && (() => {
+                    const memberHousehold = households.find(h => h.id === 'FAM-2026-0042') || households[0];
+                    return (
+                        <div className="space-y-6 max-w-4xl mx-auto">
+                            {/* Member Household Header Card */}
+                            <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-6">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                                Parishioner Household Portal
+                                            </span>
+                                            <span className="text-xs font-medium text-slate-400">ID: {memberHousehold.id}</span>
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-slate-900 mt-1">{memberHousehold.familyName} Family</h2>
+                                        <p className="text-xs text-slate-500 mt-0.5">
+                                            {memberHousehold.address}, {memberHousehold.sitioPurok}, {memberHousehold.barangay} &bull; <strong>{memberHousehold.becCluster}</strong>
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => setRequestModalOpen(true)}
+                                        className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xs transition-colors self-start sm:self-auto"
+                                    >
+                                        <Plus className="w-4 h-4" /> Request Sacramental Certificate
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => setRequestModalOpen(true)}
-                                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-xs"
-                                >
-                                    <Plus className="w-4 h-4" /> Request Certificate
-                                </button>
+
+                                {/* Household Glance Chips */}
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 text-xs text-slate-700">
+                                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <span className="text-[10px] text-slate-400 block font-medium">Housing Situation</span>
+                                        <span className="font-semibold text-slate-800">{memberHousehold.housingSituation || 'Sariling Bahay at Lupa'}</span>
+                                    </div>
+                                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <span className="text-[10px] text-slate-400 block font-medium">Income Bracket</span>
+                                        <span className="font-semibold text-slate-800">{memberHousehold.monthlyIncome || '₱10,001 – ₱15,000'}</span>
+                                    </div>
+                                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <span className="text-[10px] text-slate-400 block font-medium">BEC Participation</span>
+                                        <span className="font-semibold text-emerald-700">{memberHousehold.becParticipation || 'Regular'} Active</span>
+                                    </div>
+                                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <span className="text-[10px] text-slate-400 block font-medium">Parish Registry Status</span>
+                                        <span className="font-semibold text-emerald-700 flex items-center gap-1">
+                                            <CheckCircle2 className="w-3.5 h-3.5" /> Verified by Pastor
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Registered Family Members */}
-                            <div className="mt-4">
-                                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
-                                    Registered Family Members (Verified by Pastor)
-                                </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {households.find(h => h.id === 'FAM-2026-0042')?.members.map(member => (
-                                        <div key={member.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-1.5">
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-bold text-slate-900">{member.fullName}</span>
-                                                <span className="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-medium">
-                                                    {member.relationship} ({member.age} yrs)
+                            <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-6 space-y-4">
+                                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                                    <div>
+                                        <h3 className="font-bold text-slate-900 text-base">Family Members Roster ({memberHousehold.members.length})</h3>
+                                        <p className="text-xs text-slate-500">Official church records, educational & employment details, and sacramental milestones.</p>
+                                    </div>
+                                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                                        {memberHousehold.members.filter(m => m.isBaptized).length} Baptized &bull; {memberHousehold.members.filter(m => m.isSenior || m.age >= 60).length} Senior
+                                    </span>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {memberHousehold.members.map(member => (
+                                        <div key={member.id} className="p-4 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2.5 transition-all">
+                                            <div className="flex items-start justify-between">
+                                                <div>
+                                                    <span className="font-bold text-slate-900 text-sm block">{member.fullName}</span>
+                                                    <span className="text-slate-500 text-[11px]">
+                                                        {member.relationship} &bull; {member.age} yrs &bull; {member.civilStatus}
+                                                    </span>
+                                                </div>
+                                                <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 text-[10px] font-semibold border border-emerald-200">
+                                                    {member.relationship}
                                                 </span>
                                             </div>
-                                            <div className="flex flex-wrap gap-1 text-[10px]">
-                                                <span className={`px-1.5 py-0.5 rounded ${member.isBaptized ? 'bg-emerald-100 text-emerald-800 font-medium' : 'bg-slate-200 text-slate-600'}`}>
-                                                    {member.isBaptized ? '✓ Baptized' : 'Not Baptized'}
-                                                </span>
-                                                <span className={`px-1.5 py-0.5 rounded ${member.isFirstCommunion ? 'bg-emerald-100 text-emerald-800 font-medium' : 'bg-slate-200 text-slate-600'}`}>
-                                                    {member.isFirstCommunion ? '✓ 1st Communion' : 'No Communion'}
-                                                </span>
-                                                <span className={`px-1.5 py-0.5 rounded ${member.isConfirmed ? 'bg-emerald-100 text-emerald-800 font-medium' : 'bg-slate-200 text-slate-600'}`}>
-                                                    {member.isConfirmed ? '✓ Confirmed' : 'No Confirmation'}
-                                                </span>
+
+                                            {/* Work & Education */}
+                                            {(member.occupation || member.education) && (
+                                                <div className="text-[11px] text-slate-600 bg-white p-2 rounded-lg border border-slate-100 space-y-0.5">
+                                                    {member.occupation && (
+                                                        <div className="flex items-center gap-1.5">
+                                                            <Briefcase className="w-3 h-3 text-slate-400" />
+                                                            <span><strong>Work:</strong> {member.occupation} {member.employmentType ? `(${member.employmentType})` : ''}</span>
+                                                        </div>
+                                                    )}
+                                                    {member.education && (
+                                                        <div className="flex items-center gap-1.5">
+                                                            <GraduationCap className="w-3 h-3 text-slate-400" />
+                                                            <span><strong>Education:</strong> {member.education}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Sacraments Checklist */}
+                                            <div className="space-y-1">
+                                                <span className="text-[10px] text-slate-400 font-medium block">Sacraments Received:</span>
+                                                <div className="flex flex-wrap gap-1 text-[10px]">
+                                                    <span className={`px-2 py-0.5 rounded font-medium ${member.isBaptized ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-500'}`}>
+                                                        {member.isBaptized ? '✓ Baptized' : '✗ Unbaptized'}
+                                                    </span>
+                                                    <span className={`px-2 py-0.5 rounded font-medium ${member.isFirstCommunion ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-500'}`}>
+                                                        {member.isFirstCommunion ? '✓ 1st Communion' : '— No Communion'}
+                                                    </span>
+                                                    <span className={`px-2 py-0.5 rounded font-medium ${member.isConfirmed ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-500'}`}>
+                                                        {member.isConfirmed ? '✓ Confirmed' : '— No Confirmation'}
+                                                    </span>
+                                                    {member.isChurchMarried && (
+                                                        <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-medium">
+                                                            ✓ Church Married
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Care / Ministry Badges */}
+                                            <div className="flex flex-wrap gap-1 pt-1">
+                                                {(member.isSenior || member.age >= 60) && (
+                                                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                                                        👵 Senior 60+
+                                                    </span>
+                                                )}
+                                                {member.isHomebound && (
+                                                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                                                        🏠 Homebound Care
+                                                    </span>
+                                                )}
+                                                {member.isPwd && (
+                                                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                                        ♿ PWD
+                                                    </span>
+                                                )}
+                                                {member.needsSacramentPrep && (
+                                                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-300">
+                                                        ⚠️ Awaiting Sacramental Prep
+                                                    </span>
+                                                )}
+                                                {member.parishMinistries && member.parishMinistries.map(min => (
+                                                    <span key={min} className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                        🕊️ {min}
+                                                    </span>
+                                                ))}
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Certificates Available for Household */}
-                        <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-5 space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h3 className="font-bold text-slate-900 text-sm">Issued Sacramental Certificates</h3>
-                                    <p className="text-xs text-slate-500">Official certificates signed by the Parish Priest.</p>
-                                </div>
-                            </div>
-
-                            <div className="divide-y divide-slate-100 border border-slate-100 rounded-lg">
-                                {certificates.filter(c => c.familyId === 'FAM-2026-0042').map(cert => (
-                                    <div key={cert.id} className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            {/* Pastoral Accompaniment & Extension Training */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Area 11: Universidad de Dagupan Training */}
+                                <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-5 space-y-3">
+                                    <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
+                                        <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                                            <GraduationCap className="w-4 h-4" />
+                                        </div>
                                         <div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-bold text-slate-900 text-xs">{cert.recipientName}</span>
-                                                <span className="text-[10px] bg-purple-100 text-purple-800 font-medium px-2 py-0.5 rounded-full">
-                                                    {cert.certificateType} Certificate
-                                                </span>
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full ${cert.status === 'Approved & Issued' ? 'bg-emerald-100 text-emerald-800 font-medium' : 'bg-amber-100 text-amber-800'}`}>
-                                                    {cert.status}
-                                                </span>
+                                            <h4 className="font-bold text-slate-900 text-sm">Community Training Needs</h4>
+                                            <p className="text-[11px] text-slate-500">Skills & livelihood tracks enrolled by family</p>
+                                        </div>
+                                    </div>
+
+                                    {memberHousehold.trainingNeeds && memberHousehold.trainingNeeds.length > 0 ? (
+                                        <div className="space-y-1.5 pt-1">
+                                            {memberHousehold.trainingNeeds.map(topic => (
+                                                <div key={topic} className="p-2 rounded-lg bg-emerald-50/60 border border-emerald-200 text-xs text-emerald-900 flex items-center gap-2">
+                                                    <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                                                    <span>{topic}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-xs text-slate-400 italic">No university extension tracks currently enrolled.</p>
+                                    )}
+                                </div>
+
+                                {/* Area 12: Pastoral Accompaniment */}
+                                <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-5 space-y-3">
+                                    <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
+                                        <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center">
+                                            <HeartHandshake className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-slate-900 text-sm">Pastoral Accompaniment</h4>
+                                            <p className="text-[11px] text-slate-500">Care visits & BEC community connection</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2 text-xs text-slate-700 pt-1">
+                                        {memberHousehold.pastoralNeeds && memberHousehold.pastoralNeeds.length > 0 && (
+                                            <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                                                <span className="font-semibold text-slate-800 block text-[11px]">Requested Pastoral Care:</span>
+                                                <span className="text-slate-600">{memberHousehold.pastoralNeeds.join(' • ')}</span>
                                             </div>
-                                            <p className="text-[11px] text-slate-500 mt-0.5">
-                                                Purpose: {cert.purpose} • Date of Sacrament: {cert.dateOfSacrament}
-                                            </p>
-                                        </div>
+                                        )}
 
-                                        <div>
-                                            {cert.status === 'Approved & Issued' ? (
-                                                <button
-                                                    onClick={() => setViewingCertificate(cert)}
-                                                    className="px-3 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg flex items-center gap-1.5 shadow-xs"
-                                                >
-                                                    <Eye className="w-3.5 h-3.5" /> View / Print Certificate
-                                                </button>
-                                            ) : (
-                                                <span className="text-xs text-slate-400 italic">Under review by Pastor</span>
-                                            )}
-                                        </div>
+                                        {memberHousehold.pastoralFollowup?.nextPastoralAction && (
+                                            <div className="p-2.5 bg-purple-50 rounded-lg border border-purple-200 text-purple-900">
+                                                <span className="font-semibold block text-[11px]">Scheduled Next Action:</span>
+                                                <span>{memberHousehold.pastoralFollowup.nextPastoralAction}</span>
+                                            </div>
+                                        )}
+
+                                        {memberHousehold.volunteerSkills && memberHousehold.volunteerSkills.length > 0 && (
+                                            <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                                                <span className="font-semibold text-slate-800 block text-[11px]">Stewardship Talents Shared:</span>
+                                                <span className="text-emerald-700 font-medium">{memberHousehold.volunteerSkills.join(', ')}</span>
+                                            </div>
+                                        )}
                                     </div>
-                                ))}
+                                </div>
                             </div>
 
-                            {/* Verification Demo Button (Flowchart FC_MEMBER check) */}
-                            <div className="pt-3 border-t border-slate-100">
-                                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            {/* Certificates Available for Household */}
+                            <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-5 space-y-4">
+                                <div className="flex items-center justify-between">
                                     <div>
-                                        <span className="text-xs font-bold text-slate-800 block">Family Relationship Security Check</span>
-                                        <span className="text-[11px] text-slate-500">
-                                            Per Church privacy rules, members can only access certificates of people within their verified household.
-                                        </span>
+                                        <h3 className="font-bold text-slate-900 text-sm">Issued Sacramental Certificates</h3>
+                                        <p className="text-xs text-slate-500">Official certificates signed by the Parish Priest.</p>
                                     </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => setAccessDeniedAlert(true)}
-                                        className="px-3 py-1.5 text-xs font-medium border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg whitespace-nowrap shrink-0"
-                                    >
-                                        Test Outside Family Access
-                                    </button>
+                                </div>
+
+                                <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
+                                    {certificates.filter(c => c.familyId === memberHousehold.id).map(cert => (
+                                        <div key={cert.id} className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/60 transition-colors">
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-bold text-slate-900 text-xs">{cert.recipientName}</span>
+                                                    <span className="text-[10px] bg-purple-100 text-purple-800 font-medium px-2 py-0.5 rounded-full">
+                                                        {cert.certificateType} Certificate
+                                                    </span>
+                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${cert.status === 'Approved & Issued' ? 'bg-emerald-100 text-emerald-800 font-medium' : 'bg-amber-100 text-amber-800'}`}>
+                                                        {cert.status}
+                                                    </span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-500 mt-0.5">
+                                                    Purpose: {cert.purpose} • Date of Sacrament: {cert.dateOfSacrament}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                {cert.status === 'Approved & Issued' ? (
+                                                    <button
+                                                        onClick={() => setViewingCertificate(cert)}
+                                                        className="px-3 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg flex items-center gap-1.5 shadow-xs"
+                                                    >
+                                                        <Eye className="w-3.5 h-3.5" /> View / Print Certificate
+                                                    </button>
+                                                ) : (
+                                                    <span className="text-xs text-slate-400 italic">Under review by Pastor</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Security Check Demo */}
+                                <div className="pt-2 border-t border-slate-100">
+                                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                        <div>
+                                            <span className="text-xs font-bold text-slate-800 block">Family Relationship Security Check</span>
+                                            <span className="text-[11px] text-slate-500">
+                                                Per Church privacy canon, members can only view records of verified household members.
+                                            </span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setAccessDeniedAlert(true)}
+                                            className="px-3 py-1.5 text-xs font-medium border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg whitespace-nowrap shrink-0"
+                                        >
+                                            Test Outside Access
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
-
+                    );
+                })()}
 
                 {/* ========================================================================= */}
                 {/* 4. PARISH PASTORAL COUNCIL (PPC) SUMMARY DASHBOARD                        */}
                 {/* ========================================================================= */}
-                {currentRole === 'ppc' && (
-                    <div className="space-y-6">
-                        {/* Intro banner */}
-                        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-2xs">
-                            <span className="text-xs font-semibold text-rose-700 uppercase tracking-wider">Parish Pastoral Council</span>
-                            <h2 className="text-xl font-bold text-slate-900 mt-0.5">Parish Pastoral Summary</h2>
-                            <p className="text-xs text-slate-500 mt-1">
-                                Aggregated indicators for pastoral discernment. Individual confidential family details remain private.
-                            </p>
+                {currentRole === 'ppc' && (() => {
+                    const allMembers = households.flatMap(h => h.members);
+                    const unbaptizedCount = allMembers.filter(m => !m.isBaptized).length;
+                    const communionAwaitingCount = allMembers.filter(m => m.age >= 7 && !m.isFirstCommunion).length;
+                    const confirmationAwaitingCount = allMembers.filter(m => m.age >= 12 && !m.isConfirmed).length;
+                    const couplesForChurchWedding = households.filter(h => h.members.some(m => m.civilStatus === 'Civilly Married' || m.civilStatus === 'Cohabiting')).length;
+
+                    const youthCount = allMembers.filter(m => m.age >= 13 && m.age <= 22).length;
+                    const osyCount = allMembers.filter(m => m.isOutOfSchoolYouth).length;
+                    const catechismNeedCount = households.filter(h => h.pastoralNeeds.some(n => n.toLowerCase().includes('catechesis') || n.toLowerCase().includes('sacrament') || n.toLowerCase().includes('children'))).length;
+
+                    const vulnerableCount = households.filter(h => h.isVulnerable || !!h.livelihoodAssistanceNeeded).length;
+                    const homeboundElderlyCount = allMembers.filter(m => m.isHomebound || m.needsCommunionAnointing).length;
+                    const pwdCount = allMembers.filter(m => m.isPwd).length;
+                    const totalCareRequests = households.filter(h => h.pastoralFollowup?.homeVisits || h.pastoralNeeds.some(n => n.toLowerCase().includes('visit') || n.toLowerCase().includes('communion'))).length;
+
+                    // Dynamic Universidad de Dagupan Training Tracks Ranking
+                    const trainingMap: Record<string, number> = {};
+                    households.forEach(h => {
+                        (h.trainingNeeds || []).forEach(t => {
+                            trainingMap[t] = (trainingMap[t] || 0) + 1;
+                        });
+                    });
+                    const sortedTrainingTracks = Object.entries(trainingMap).sort((a, b) => b[1] - a[1]);
+                    const totalTrainingEnrollees = Object.values(trainingMap).reduce((a, b) => a + b, 0);
+
+                    // Dynamic Talents Map
+                    const talentMap: Record<string, number> = {};
+                    households.forEach(h => {
+                        (h.volunteerSkills || []).forEach(s => {
+                            talentMap[s] = (talentMap[s] || 0) + 1;
+                        });
+                        h.members.forEach(m => {
+                            (m.skillsTalents || []).forEach(s => {
+                                talentMap[s] = (talentMap[s] || 0) + 1;
+                            });
+                        });
+                    });
+                    const sortedTalents = Object.entries(talentMap).sort((a, b) => b[1] - a[1]);
+
+                    const becActivePercentage = Math.round(
+                        (households.filter(h => h.becParticipation === 'Regular' || h.becParticipation === 'Sometimes').length / Math.max(1, households.length)) * 100
+                    );
+
+                    return (
+                        <div className="space-y-6">
+                            {/* Intro banner */}
+                            <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <span className="text-xs font-semibold text-rose-700 uppercase tracking-wider bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
+                                        Parish Pastoral Council
+                                    </span>
+                                    <h2 className="text-xl font-bold text-slate-900 mt-1">Parish Pastoral Discernment Summary</h2>
+                                    <p className="text-xs text-slate-500 mt-0.5">
+                                        Aggregated data from household surveys across all BEC clusters for pastoral planning, community accompaniment, and university extension.
+                                    </p>
+                                </div>
+                                <div className="text-right shrink-0">
+                                    <span className="text-[11px] text-slate-400 block">Total Parishioners</span>
+                                    <span className="text-2xl font-bold text-slate-900">{allMembers.length}</span>
+                                </div>
+                            </div>
+
+                            {/* Top 4 KPI Cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+                                    <span className="text-xs font-medium text-slate-500">Families Surveyed</span>
+                                    <p className="text-2xl font-bold text-slate-900 mt-1">{households.length}</p>
+                                    <span className="text-[11px] text-emerald-600 font-medium">Across all BEC clusters</span>
+                                </div>
+
+                                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+                                    <span className="text-xs font-medium text-slate-500">BEC Participation Rate</span>
+                                    <p className="text-2xl font-bold text-blue-600 mt-1">{becActivePercentage}%</p>
+                                    <span className="text-[11px] text-slate-500">Active grassroots presence</span>
+                                </div>
+
+                                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+                                    <span className="text-xs font-medium text-slate-500">Care Priority Families</span>
+                                    <p className="text-2xl font-bold text-amber-600 mt-1">{vulnerableCount + totalCareRequests}</p>
+                                    <span className="text-[11px] text-slate-500">Vulnerable / Homebound visits</span>
+                                </div>
+
+                                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+                                    <span className="text-xs font-medium text-slate-500">Community Training Demand</span>
+                                    <p className="text-2xl font-bold text-emerald-600 mt-1">{totalTrainingEnrollees}</p>
+                                    <span className="text-[11px] text-slate-500">Community training tracks</span>
+                                </div>
+                            </div>
+
+                            {/* Three Commissions Grid (Worship, Evangelization, Social Services) */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                {/* Commission on Worship */}
+                                <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-5 space-y-4">
+                                    <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
+                                            W
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-slate-900 text-sm">Commission on Worship</h3>
+                                            <p className="text-[11px] text-slate-500">Sacramental & liturgical accompaniment</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2.5 text-xs">
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Children needing Baptism</span>
+                                            <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                                                {unbaptizedCount}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Awaiting First Communion</span>
+                                            <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                                                {communionAwaitingCount}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Awaiting Confirmation</span>
+                                            <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                                                {confirmationAwaitingCount}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Couples for Church Wedding</span>
+                                            <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                                                {couplesForChurchWedding}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Commission on Evangelization */}
+                                <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-5 space-y-4">
+                                    <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                                        <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
+                                            E
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-slate-900 text-sm">Commission on Evangelization</h3>
+                                            <p className="text-[11px] text-slate-500">Faith formation & youth guidance</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2.5 text-xs">
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Youth (13–22 yrs)</span>
+                                            <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                                {youthCount}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Out-of-School Youth (OSY)</span>
+                                            <span className="font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                                {osyCount}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Catechesis & Formation Needs</span>
+                                            <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                                {catechismNeedCount} families
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Inactive Families for Accompaniment</span>
+                                            <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                                {households.filter(h => h.becParticipation === 'Not active' || h.massFrequency === 'Rarely / Never').length}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Commission on Social Services */}
+                                <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-5 space-y-4">
+                                    <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                                        <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">
+                                            S
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-slate-900 text-sm">Commission on Social Services</h3>
+                                            <p className="text-[11px] text-slate-500">Care for sick, elderly & vulnerable</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2.5 text-xs">
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Vulnerable / Livelihood Needs</span>
+                                            <span className="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                                                {vulnerableCount} families
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Homebound Elderly & Sick</span>
+                                            <span className="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                                                {homeboundElderlyCount} members
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Persons with Disability (PWD)</span>
+                                            <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                                                {pwdCount} members
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                            <span className="text-slate-700">Home Visits Requested</span>
+                                            <span className="font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                                                {totalCareRequests} families
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Community Training Needs & Workshop Demand */}
+                            <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-5 space-y-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
+                                            <GraduationCap className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-slate-900 text-sm">Community Training Needs & Workshop Demand</h3>
+                                            <p className="text-xs text-slate-500">Skills training tracks requested by parishioners to schedule with training teams.</p>
+                                        </div>
+                                    </div>
+                                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 self-start sm:self-auto">
+                                        {sortedTrainingTracks.length} Active Tracks
+                                    </span>
+                                </div>
+
+                                {sortedTrainingTracks.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                                        {sortedTrainingTracks.map(([topic, count]) => (
+                                            <div key={topic} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
+                                                <div className="space-y-0.5">
+                                                    <span className="font-semibold text-slate-900 block">{topic}</span>
+                                                    <span className="text-[11px] text-slate-500">Community Extension Track</span>
+                                                </div>
+                                                <div className="text-right shrink-0">
+                                                    <span className="text-base font-bold text-emerald-700">{count}</span>
+                                                    <span className="text-[10px] text-slate-400 block">families</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-slate-400 italic">No training needs recorded yet.</p>
+                                )}
+                            </div>
+
+                            {/* Stewardship Pool: Available Talents */}
+                            <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-5 space-y-3">
+                                <div>
+                                    <h3 className="font-bold text-slate-900 text-sm">Stewardship Talents Offered by Parishioners</h3>
+                                    <p className="text-xs text-slate-500">
+                                        Parishioners willing to share time, skills, and charisms to build up the church and BEC communities.
+                                    </p>
+                                </div>
+
+                                <div className="flex flex-wrap gap-2 text-xs">
+                                    {sortedTalents.length > 0 ? sortedTalents.map(([talent, count]) => (
+                                        <div key={talent} className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg">
+                                            <span className="text-slate-800 font-medium">{talent}</span>
+                                            <span className="text-[11px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800">
+                                                {count}
+                                            </span>
+                                        </div>
+                                    )) : (
+                                        <p className="text-xs text-slate-400 italic">No volunteer talents recorded yet.</p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-
-                        {/* Top KPI Cards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
-                                <span className="text-xs font-medium text-slate-500">Total Families Encoded</span>
-                                <p className="text-2xl font-bold text-slate-900 mt-1">{households.length}</p>
-                                <span className="text-[11px] text-emerald-600 font-medium">Across 3 BEC Clusters</span>
-                            </div>
-
-                            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
-                                <span className="text-xs font-medium text-slate-500">BEC Participation Rate</span>
-                                <p className="text-2xl font-bold text-blue-600 mt-1">67%</p>
-                                <span className="text-[11px] text-slate-500">Active grassroots presence</span>
-                            </div>
-
-                            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
-                                <span className="text-xs font-medium text-slate-500">Pastoral Visits Requested</span>
-                                <p className="text-2xl font-bold text-amber-600 mt-1">
-                                    {households.filter(h => h.pastoralNeeds.some(n => n.includes('visit') || n.includes('communion'))).length + 2}
-                                </p>
-                                <span className="text-[11px] text-slate-500">Elderly & homebound priority</span>
-                            </div>
-
-                            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
-                                <span className="text-xs font-medium text-slate-500">Volunteers & Charisms</span>
-                                <p className="text-2xl font-bold text-emerald-600 mt-1">
-                                    {households.reduce((acc, h) => acc + h.volunteerSkills.length, 0) + 4}
-                                </p>
-                                <span className="text-[11px] text-slate-500">Stewardship talents offered</span>
-                            </div>
-                        </div>
-
-                        {/* Three Commissions Grid (Worship, Evangelization, Social Services) */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            {/* Commission on Worship */}
-                            <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-5 space-y-4">
-                                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
-                                        W
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-slate-900 text-sm">Commission on Worship</h3>
-                                        <p className="text-[11px] text-slate-500">Sacramental & liturgical needs</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3 text-xs">
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Children needing Baptism</span>
-                                        <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                                            {households.flatMap(h => h.members).filter(m => !m.isBaptized).length + 5}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Awaiting First Communion</span>
-                                        <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                                            {households.flatMap(h => h.members).filter(m => m.age >= 7 && !m.isFirstCommunion).length + 8}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Awaiting Confirmation</span>
-                                        <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                                            {households.flatMap(h => h.members).filter(m => m.age >= 12 && !m.isConfirmed).length + 12}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Couples for Church Wedding</span>
-                                        <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                                            {households.filter(h => h.members.some(m => m.civilStatus === 'Civilly Married' || m.civilStatus === 'Cohabiting')).length + 4}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Commission on Evangelization */}
-                            <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-5 space-y-4">
-                                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-                                    <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
-                                        E
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-slate-900 text-sm">Commission on Evangelization</h3>
-                                        <p className="text-[11px] text-slate-500">Formation & faith outreach</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3 text-xs">
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Youth ready for formation</span>
-                                        <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                                            {households.flatMap(h => h.members).filter(m => m.age >= 13 && m.age <= 22).length + 14}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Inactive families open to visit</span>
-                                        <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                                            {households.filter(h => h.becParticipation === 'Not active' || h.massFrequency === 'Rarely / Never').length + 3}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Bible & Catechism requests</span>
-                                        <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                                            9 families
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Potential BEC Animators</span>
-                                        <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                                            6 parishioners
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Commission on Social Services */}
-                            <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-5 space-y-4">
-                                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-                                    <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">
-                                        S
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-slate-900 text-sm">Commission on Social Services</h3>
-                                        <p className="text-[11px] text-slate-500">Care for the sick, elderly & needy</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3 text-xs">
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Homebound elderly / Sick</span>
-                                        <span className="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
-                                            {households.flatMap(h => h.members).filter(m => m.isHomebound).length + 4}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Persons with Disability (PWD)</span>
-                                        <span className="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
-                                            3 members
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Livelihood assistance needs</span>
-                                        <span className="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
-                                            7 families
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                                        <span className="text-slate-700">Flooding / Shelter concerns</span>
-                                        <span className="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
-                                            5 families
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Stewardship Pool: Available Talents */}
-                        <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-5 space-y-3">
-                            <div>
-                                <h3 className="font-bold text-slate-900 text-sm">Stewardship Talents Offered by Parishioners</h3>
-                                <p className="text-xs text-slate-500">
-                                    People willing to share time, skills, and professional services to build up the parish.
-                                </p>
-                            </div>
-
-                            <div className="flex flex-wrap gap-2 text-xs">
-                                {[
-                                    { label: 'Teaching / Catechesis', count: 8 },
-                                    { label: 'Choir & Music', count: 6 },
-                                    { label: 'Medical / First Aid', count: 4 },
-                                    { label: 'Carpentry & Maintenance', count: 5 },
-                                    { label: 'Youth Mentorship', count: 7 },
-                                    { label: 'Legal / Administrative Advice', count: 2 },
-                                    { label: 'BEC Coordination', count: 9 },
-                                ].map(item => (
-                                    <div key={item.label} className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg">
-                                        <span className="text-slate-800 font-medium">{item.label}</span>
-                                        <span className="text-[11px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800">
-                                            {item.count}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                    );
+                })()}
             </main>
 
             {/* ========================================================================= */}
@@ -2481,14 +3674,25 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
             {/* ========================================================================= */}
             {selectedHouseholdForReview && (
                 <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-xl">
+                    <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-xl">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                             <div>
-                                <h3 className="text-lg font-bold text-slate-900">
-                                    {selectedHouseholdForReview.familyName} Family Record
-                                </h3>
-                                <p className="text-xs text-slate-500">
-                                    ID: {selectedHouseholdForReview.id} • Status: <span className="font-semibold text-amber-700">{selectedHouseholdForReview.status}</span>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-lg font-bold text-slate-900">
+                                        {selectedHouseholdForReview.familyName} Family Record
+                                    </h3>
+                                    <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${
+                                        selectedHouseholdForReview.status === 'Approved'
+                                            ? 'bg-emerald-100 text-emerald-800'
+                                            : selectedHouseholdForReview.status === 'Returned for Correction'
+                                                ? 'bg-rose-100 text-rose-800'
+                                                : 'bg-amber-100 text-amber-800'
+                                    }`}>
+                                        {selectedHouseholdForReview.status}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-slate-500 mt-0.5">
+                                    ID: {selectedHouseholdForReview.id} &bull; Encoded by: {selectedHouseholdForReview.encodedBy || 'Parish Volunteer'} &bull; Date: {selectedHouseholdForReview.dateEncoded}
                                 </p>
                             </div>
                             <button
@@ -2499,40 +3703,134 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                             </button>
                         </div>
 
-                        {/* Location Details */}
-                        <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        {/* Location & Contact Grid */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                             <div><strong>Head:</strong> {selectedHouseholdForReview.headName}</div>
+                            <div><strong>Contact:</strong> {selectedHouseholdForReview.contactNumber || 'None'}</div>
                             <div><strong>Address:</strong> {selectedHouseholdForReview.address}</div>
-                            <div><strong>Barangay:</strong> {selectedHouseholdForReview.barangay}, {selectedHouseholdForReview.sitioPurok}</div>
-                            <div><strong>BEC:</strong> {selectedHouseholdForReview.becCluster}</div>
-                            <div><strong>Mass:</strong> {selectedHouseholdForReview.massFrequency}</div>
-                            <div><strong>BEC Meetings:</strong> {selectedHouseholdForReview.becParticipation}</div>
+                            <div><strong>Barangay & Sitio:</strong> {selectedHouseholdForReview.barangay}, {selectedHouseholdForReview.sitioPurok}</div>
+                            <div><strong>BEC Cluster:</strong> {selectedHouseholdForReview.becCluster}</div>
+                            <div><strong>Sunday Mass:</strong> {selectedHouseholdForReview.massFrequency}</div>
+                        </div>
+
+                        {/* Socio-Economics & Housing (Area 10) */}
+                        <div className="p-3.5 bg-blue-50/50 rounded-xl border border-blue-200 text-xs space-y-2">
+                            <h4 className="font-bold text-blue-900 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                                <Building className="w-3.5 h-3.5 text-blue-700" /> Socio-Economic & Housing Profile
+                            </h4>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-slate-700">
+                                <div><span className="text-slate-500 block text-[10px]">Housing Situation:</span> <strong>{selectedHouseholdForReview.housingSituation || 'Not specified'}</strong></div>
+                                <div><span className="text-slate-500 block text-[10px]">Monthly Income:</span> <strong>{selectedHouseholdForReview.monthlyIncome || 'Not disclosed'}</strong></div>
+                                <div><span className="text-slate-500 block text-[10px]">BEC Gathering:</span> <strong>{selectedHouseholdForReview.becParticipation}</strong></div>
+                                <div>
+                                    <span className="text-slate-500 block text-[10px]">Vulnerability:</span>
+                                    {selectedHouseholdForReview.isVulnerable ? (
+                                        <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-[10px] inline-block">
+                                            ⚠️ Flagged Vulnerable
+                                        </span>
+                                    ) : (
+                                        <span className="text-slate-600 font-medium text-[11px]">Standard</span>
+                                    )}
+                                </div>
+                            </div>
+                            {selectedHouseholdForReview.livelihoodAssistanceNeeded && (
+                                <p className="pt-1 text-[11px] text-amber-900 bg-amber-50 p-2 rounded border border-amber-200">
+                                    <strong>Livelihood Assistance Requested:</strong> {selectedHouseholdForReview.livelihoodAssistanceNeeded}
+                                </p>
+                            )}
                         </div>
 
                         {/* Members Table */}
                         <div className="space-y-2">
-                            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Household Members</h4>
-                            <div className="border border-slate-200 rounded-lg overflow-hidden text-xs">
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                                    Household Members ({selectedHouseholdForReview.members.length})
+                                </h4>
+                                <span className="text-[11px] text-slate-500">
+                                    {selectedHouseholdForReview.members.filter(m => m.isBaptized).length} Baptized &bull; {selectedHouseholdForReview.members.filter(m => m.isSenior || m.age >= 60).length} Senior &bull; {selectedHouseholdForReview.members.filter(m => m.isPwd).length} PWD
+                                </span>
+                            </div>
+                            <div className="border border-slate-200 rounded-xl overflow-hidden text-xs">
                                 <table className="w-full text-left divide-y divide-slate-200">
-                                    <thead className="bg-slate-100 text-slate-600 font-medium">
+                                    <thead className="bg-slate-100 text-slate-600 font-semibold text-[11px]">
                                         <tr>
-                                            <th className="p-2">Name</th>
-                                            <th className="p-2">Relation</th>
-                                            <th className="p-2">Age</th>
-                                            <th className="p-2">Baptized</th>
-                                            <th className="p-2">Communion</th>
-                                            <th className="p-2">Confirmed</th>
+                                            <th className="p-2.5">Name & Relation</th>
+                                            <th className="p-2.5">Age / Sex</th>
+                                            <th className="p-2.5">Work & Education</th>
+                                            <th className="p-2.5">Sacraments</th>
+                                            <th className="p-2.5">Care Needs / Flags</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100 bg-white">
                                         {selectedHouseholdForReview.members.map(m => (
-                                            <tr key={m.id}>
-                                                <td className="p-2 font-medium text-slate-900">{m.fullName}</td>
-                                                <td className="p-2 text-slate-600">{m.relationship}</td>
-                                                <td className="p-2 text-slate-600">{m.age}</td>
-                                                <td className="p-2">{m.isBaptized ? '✓ Yes' : '— No'}</td>
-                                                <td className="p-2">{m.isFirstCommunion ? '✓ Yes' : '— No'}</td>
-                                                <td className="p-2">{m.isConfirmed ? '✓ Yes' : '— No'}</td>
+                                            <tr key={m.id} className="hover:bg-slate-50/70 transition-colors">
+                                                <td className="p-2.5">
+                                                    <span className="font-bold text-slate-900 block">{m.fullName}</span>
+                                                    <span className="text-[10px] text-slate-500">{m.relationship} &bull; {m.civilStatus}</span>
+                                                </td>
+                                                <td className="p-2.5 text-slate-600">
+                                                    {m.age} yrs &bull; {m.sex}
+                                                    {m.birthdate && <span className="block text-[10px] text-slate-400">{m.birthdate}</span>}
+                                                </td>
+                                                <td className="p-2.5 text-slate-600">
+                                                    <div>{m.occupation || '—'}</div>
+                                                    <span className="text-[10px] text-slate-400 block">{m.education || ''}</span>
+                                                </td>
+                                                <td className="p-2.5">
+                                                    <div className="flex flex-wrap gap-1 text-[10px]">
+                                                        <span className={`px-1.5 py-0.5 rounded ${m.isBaptized ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-400'}`}>
+                                                            {m.isBaptized ? 'Bap' : 'No Bap'}
+                                                        </span>
+                                                        <span className={`px-1.5 py-0.5 rounded ${m.isFirstCommunion ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-400'}`}>
+                                                            {m.isFirstCommunion ? 'Com' : 'No Com'}
+                                                        </span>
+                                                        <span className={`px-1.5 py-0.5 rounded ${m.isConfirmed ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-400'}`}>
+                                                            {m.isConfirmed ? 'Conf' : 'No Conf'}
+                                                        </span>
+                                                        {m.isChurchMarried && (
+                                                            <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                                                                Church Wed
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="p-2.5">
+                                                    <div className="flex flex-wrap gap-1 text-[10px]">
+                                                        {m.needsSacramentPrep && (
+                                                            <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-semibold">
+                                                                Needs Sacraments
+                                                            </span>
+                                                        )}
+                                                        {(m.isSenior || m.age >= 60) && (
+                                                            <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">
+                                                                Senior 60+
+                                                            </span>
+                                                        )}
+                                                        {m.isHomebound && (
+                                                            <span className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold">
+                                                                🏠 Homebound
+                                                            </span>
+                                                        )}
+                                                        {m.isPwd && (
+                                                            <span className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">
+                                                                ♿ PWD
+                                                            </span>
+                                                        )}
+                                                        {m.needsCommunionAnointing && (
+                                                            <span className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">
+                                                                Viaticum Call
+                                                            </span>
+                                                        )}
+                                                        {m.isOutOfSchoolYouth && (
+                                                            <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">
+                                                                OSY Youth
+                                                            </span>
+                                                        )}
+                                                        {!m.needsSacramentPrep && !m.isSenior && m.age < 60 && !m.isHomebound && !m.isPwd && !m.needsCommunionAnointing && !m.isOutOfSchoolYouth && (
+                                                            <span className="text-slate-400">—</span>
+                                                        )}
+                                                    </div>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -2540,15 +3838,54 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                             </div>
                         </div>
 
+                        {/* Community Training & Follow-up */}
+                        {((selectedHouseholdForReview.trainingNeeds && selectedHouseholdForReview.trainingNeeds.length > 0) || selectedHouseholdForReview.pastoralFollowup) && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                {selectedHouseholdForReview.trainingNeeds && selectedHouseholdForReview.trainingNeeds.length > 0 && (
+                                    <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1.5">
+                                        <div className="font-bold text-emerald-900 text-[11px] flex items-center gap-1.5">
+                                            <GraduationCap className="w-3.5 h-3.5 text-emerald-700" />
+                                            Community Training Needs Requested:
+                                        </div>
+                                        <div className="flex flex-wrap gap-1">
+                                            {selectedHouseholdForReview.trainingNeeds.map(topic => (
+                                                <span key={topic} className="px-2 py-0.5 bg-white text-emerald-800 rounded text-[10px] font-medium border border-emerald-200">
+                                                    {topic}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {selectedHouseholdForReview.pastoralFollowup && (
+                                    <div className="p-3 bg-purple-50 rounded-xl border border-purple-200 space-y-1 text-purple-950">
+                                        <div className="font-bold text-purple-900 text-[11px] flex items-center gap-1.5">
+                                            <HeartHandshake className="w-3.5 h-3.5 text-purple-700" />
+                                            Pastoral Follow-Up Actions:
+                                        </div>
+                                        {selectedHouseholdForReview.pastoralFollowup.homeVisits && (
+                                            <p className="text-[11px] text-purple-800 font-semibold">• Home Visit Requested</p>
+                                        )}
+                                        {selectedHouseholdForReview.pastoralFollowup.referral && (
+                                            <p className="text-[11px]"><strong>Referral:</strong> {selectedHouseholdForReview.pastoralFollowup.referral}</p>
+                                        )}
+                                        {selectedHouseholdForReview.pastoralFollowup.nextPastoralAction && (
+                                            <p className="text-[11px]"><strong>Next Action:</strong> {selectedHouseholdForReview.pastoralFollowup.nextPastoralAction}</p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {/* Pastoral Listening Details */}
                         <div className="space-y-2 text-xs">
                             <h4 className="font-bold text-slate-800 uppercase tracking-wider">Pastoral Listening Responses</h4>
-                            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5 text-slate-700">
-                                <p><strong>Joy / Blessing:</strong> {selectedHouseholdForReview.familyJoy}</p>
-                                <p><strong>Difficulty / Concern:</strong> {selectedHouseholdForReview.familyConcern}</p>
-                                <p><strong>How Parish Can Accompany:</strong> {selectedHouseholdForReview.howParishCanHelp}</p>
+                            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5 text-slate-700">
+                                <p><strong>Joy / Blessing:</strong> {selectedHouseholdForReview.familyJoy || 'None noted'}</p>
+                                <p><strong>Difficulty / Concern:</strong> {selectedHouseholdForReview.familyConcern || 'None noted'}</p>
+                                <p><strong>How Parish Can Accompany:</strong> {selectedHouseholdForReview.howParishCanHelp || 'None noted'}</p>
                                 {selectedHouseholdForReview.volunteerSkills.length > 0 && (
-                                    <p><strong>Gifts Offered:</strong> {selectedHouseholdForReview.volunteerSkills.join(', ')}</p>
+                                    <p><strong>Gifts & Talents Offered:</strong> {selectedHouseholdForReview.volunteerSkills.join(', ')}</p>
                                 )}
                             </div>
                         </div>
@@ -2580,7 +3917,7 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                                     <button
                                         type="button"
                                         onClick={() => handleApproveHousehold(selectedHouseholdForReview.id)}
-                                        className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
+                                        className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-xs"
                                     >
                                         <Check className="w-4 h-4" /> Approve & Save Record
                                     </button>
@@ -2590,6 +3927,17 @@ export default function Prototype({ initialHouseholds, initialCertificates, pari
                     </div>
                 </div>
             )}
+
+            {/* ========================================================================= */}
+            {/* MODAL: SMART MEMBER SURVEY (PROGRESSIVE DISCLOSURE)                       */}
+            {/* ========================================================================= */}
+            <MemberSurveyModal
+                isOpen={isMemberModalOpen}
+                onClose={() => setIsMemberModalOpen(false)}
+                member={memberDraft}
+                onSave={handleSaveMemberDraft}
+                isNew={editingMemberIndex === null}
+            />
 
             {/* ========================================================================= */}
             {/* MODAL: PASTOR ISSUE CERTIFICATE                                           */}
