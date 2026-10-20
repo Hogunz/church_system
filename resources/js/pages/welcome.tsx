@@ -142,7 +142,13 @@ export default function Welcome({
                         </a>
                     </nav>
 
-                    <div>
+                    <div className="flex items-center gap-2">
+                        <Link
+                            href="/login"
+                            className="inline-flex items-center px-3.5 py-2 rounded-lg text-slate-700 hover:text-emerald-800 hover:bg-slate-100 text-xs font-semibold transition-colors"
+                        >
+                            Sign In / Portal
+                        </Link>
                         <Link
                             href="/prototype"
                             className="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold transition-colors"

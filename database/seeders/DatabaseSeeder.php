@@ -68,10 +68,21 @@ class DatabaseSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'member@parish.org'],
             [
-                'name' => 'Maria Santos',
+                'name' => 'Roberto Santos',
                 'password' => Hash::make('password'),
                 'role' => 'parishioner',
                 'household_id' => $santosHousehold->id,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Parish Pastoral Council (PPC) User
+        User::updateOrCreate(
+            ['email' => 'ppc@parish.org'],
+            [
+                'name' => 'Dra. Elena Bautista',
+                'password' => Hash::make('password'),
+                'role' => 'ppc',
                 'email_verified_at' => now(),
             ]
         );
