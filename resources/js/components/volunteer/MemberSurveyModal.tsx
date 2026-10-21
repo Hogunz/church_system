@@ -16,7 +16,7 @@ import {
     ChevronRight,
     ChevronDown,
 } from 'lucide-react';
-import type { FamilyMember } from '@/pages/prototype';
+import type { FamilyMember } from '@/types/parish';
 
 interface MemberSurveyModalProps {
     isOpen: boolean;
